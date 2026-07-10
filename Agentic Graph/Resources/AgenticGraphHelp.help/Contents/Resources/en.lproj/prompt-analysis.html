@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="AppleTitle" content="Agentic Graph Help">
+    <meta name="description" content="Use AI to review an agent's prompt for clarity, scope, and routing issues.">
+    <meta name="keywords" content="prompt analysis, prompt, agent, instructions, review, chain, translate, translation, LLM, AI, issues, recommendations, routing, comments, clipboard">
+    <title>Prompt Analysis</title>
+    <link rel="stylesheet" href="shared/help.css">
+</head>
+<body>
+    <header>
+        <h1>Prompt Analysis</h1>
+    </header>
+    <main>
+        <p>Prompt Analysis uses AI to review the instructions you give an agent. Where the <a href="analysis.html">Analysis</a> tab evaluates the whole graph's structure, Prompt Analysis focuses on a single agent's prompt text &mdash; checking it for ambiguity, missing constraints, scope creep, and routing problems.</p>
+
+        <div class="note">Prompt Analysis is AI-assisted. Findings should be verified by a qualified reviewer.</div>
+
+        <p>Open it from the <strong>Prompt Analysis</strong> tab in the <a href="inspector.html">Inspector</a> &mdash; the magnifying-glass icon at the right-hand end of the tab bar. The tab works only when a single <a href="node-agent.html">Agent</a> node is selected; with anything else selected it asks you to select an agent.</p>
+
+        <h2>The prompt field</h2>
+        <p>The large text field at the top holds the prompt to analyse. You can type or paste into it directly, or fill it from the selected agent:</p>
+        <ul>
+            <li><strong>Copy from agent</strong> &mdash; Copies the selected agent's Instructions field into the prompt field.</li>
+            <li><strong>Chain</strong> &mdash; Concatenates the linear chain of upstream agents that feed into this one, so you can review a hand-off as a whole. The button is enabled only when the agent has exactly one upstream agent caller; with none or several, chaining would be ambiguous and the button is disabled.</li>
+        </ul>
+        <p>If the prompt field already holds text that doesn't match, Copy from agent and Chain ask for confirmation before replacing it. The prompt text is saved with the project, separately for each agent, so your drafts survive closing and reopening the file.</p>
+
+        <h2>Translation</h2>
+        <p>When a target language is configured in <a href="settings.html">Settings &gt; Analysis &gt; Prompt Analysis</a>, a <strong>To &lt;language&gt;</strong> button appears next to the prompt field and translates the current prompt text into that language in place. An optional second "reverse" target adds a button that translates the other way &mdash; useful for round-tripping a prompt between two working languages. Each button is hidden when its language is left blank.</p>
+
+        <h2>Running an analysis</h2>
+        <ol>
+            <li>Ensure an LLM provider is configured in <a href="settings.html">Settings &gt; Analysis &gt; LLM Provider</a>.</li>
+            <li>Select an agent node and put the prompt to review in the prompt field.</li>
+            <li>Optionally tick <strong>Include routing details</strong> (see below).</li>
+            <li>Click <strong>Analyse</strong>. Click <strong>Cancel</strong> to stop a run in progress.</li>
+        </ol>
+        <p>Results appear in a scrollable list below the controls. Each issue card shows a severity icon, a title, an explanation, and a recommended fix; use a card's chevron to collapse or expand its detail. When the prompt is clean, the list reports that no issues were found.</p>
+
+        <h2>Keeping a result</h2>
+        <p>Two small icon buttons in the result header &mdash; beside the run time &mdash; save a completed analysis. Point at either to see what it does.</p>
+        <ul>
+            <li><strong>Append to Comments</strong> &mdash; Adds the result to the selected agent's <strong>Comments</strong> field as a dated, plain-text block &mdash; a header line, then the title, issue, and recommendation for each finding. Running the analysis again appends a fresh block below the last, so the Comments field keeps a running history. The labels follow the app's language.</li>
+            <li><strong>Copy to clipboard</strong> &mdash; Copies the same block to the clipboard, ready to paste into a ticket, document, or message.</li>
+        </ul>
+
+        <h2>Single agent vs. chain</h2>
+        <p>A badge next to the Analyse button shows how the prompt will be interpreted:</p>
+        <ul>
+            <li><strong>Single agent</strong> &mdash; The prompt is treated as one agent's instructions. This is the default, and what you get after Copy from agent.</li>
+            <li><strong>Chain (N)</strong> &mdash; The prompt is treated as a hand-off across N agents. This mode is set by the Chain button and lets the analysis reason about how the agents pass work along.</li>
+        </ul>
+        <p>In either mode the analysis is also given context about the agents involved &mdash; their connected <a href="node-tool.html">tools</a> and <a href="node-knowledge.html">knowledge sources</a> &mdash; so it can judge whether the prompt matches the agent's actual capabilities.</p>
+
+        <h2>Include routing details</h2>
+        <p>In a multi-agent system, an agent's <strong>Details</strong> field often doubles as its routing description &mdash; a short statement of what the agent does that upstream agents use to decide where to send a request. Tick <strong>Include routing details</strong> to feed each agent's Details field to the analysis as its routing description, so the review can check that the prompt and the routing description agree.</p>
+
+        <h2>Debugging the exchange</h2>
+        <p>After a run, a small debug button (a bug icon) appears next to the controls. It opens a window showing exactly what was sent to and received from the LLM &mdash; the system prompt, the user message, and the raw response &mdash; which is useful when a result is surprising or when you are tuning the prompt templates in Settings.</p>
+
+        <h2>Settings</h2>
+        <p>The system prompt and user-message template that drive the analysis are editable in <a href="settings.html">Settings &gt; Analysis &gt; Prompt Analysis</a>, along with the translation target languages. See <a href="settings.html">Settings</a> for details.</p>
+    </main>
+    <nav class="see-also">
+        <h2>See Also</h2>
+        <ul>
+            <li><a href="inspector.html">Inspector</a></li>
+            <li><a href="analysis.html">Analysis</a></li>
+            <li><a href="settings.html">Settings</a></li>
+            <li><a href="node-agent.html">Agent Node</a></li>
+        </ul>
+    </nav>
+</body>
+</html>

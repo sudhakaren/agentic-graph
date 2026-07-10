@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="AppleTitle" content="Agentic Graph Help">
+    <meta name="description" content="Learn about the different node types in Agentic Graph.">
+    <meta name="keywords" content="node types, agent, tool, knowledge, human, comment, shapes, rectangle, oval, text, ports, components">
+    <title>Node Types</title>
+    <link rel="stylesheet" href="shared/help.css">
+</head>
+<body>
+    <header>
+        <h1>Node Types</h1>
+    </header>
+    <main>
+        <p>Nodes are the building blocks of your graph. They are organised into three categories in the sidebar palette.</p>
+
+        <h2>Components</h2>
+        <p>Component nodes represent the functional parts of your agentic system. They have ports for creating connections. Click a node type below for a full field reference.</p>
+
+        <h3><a href="node-agent.html">Agent</a></h3>
+        <p>The core decision-making unit. Agents have both input and output ports and support rich metadata including framework, model, role, goals, complexity, memory type, delegation capability, latency budget, and iteration limits.</p>
+
+        <h3><a href="node-tool.html">Tool</a></h3>
+        <p>An external capability that agents can invoke. Tools have input and output ports. Metadata includes tool type (OpenAI, MCP, API, Python, etc.), endpoint, authentication method, category, error handling strategy, inputs, outputs, and async/sync behaviour.</p>
+
+        <h3><a href="node-knowledge.html">Knowledge</a></h3>
+        <p>A data source that agents can query. Knowledge nodes have an input port. Metadata covers location, data formats, access method, sensitivity, update frequency, size, retrieval and chunking strategies, and risk level.</p>
+
+        <h3><a href="node-human.html">Human</a></h3>
+        <p>Represents a human participant in the system. Humans have input and output ports. Metadata includes input/output channels, role, access level, SLA, timezone, and expected behaviours.</p>
+
+        <h2>Annotations</h2>
+
+        <h3>Comment</h3>
+        <p>A free-text annotation with no ports. Use comments to document design decisions, assumptions, or areas of concern directly on the canvas. Comments have a title (shown as the comment text), an optional detail field, and a configurable colour.</p>
+
+        <h2>Shapes</h2>
+        <p>Visual-only elements for organising and decorating your graph. Shapes have no ports and cannot be connected.</p>
+
+        <h3>Rectangle / Rounded Rectangle / Oval</h3>
+        <p>Geometric shapes for grouping related nodes visually or creating boundaries and regions on the canvas. Each has a line colour, optional fill colour, and z-order controls (bring forward, send backward).</p>
+
+        <h3>Text</h3>
+        <p>A text label without a visible border. Useful for section headings or callouts. Has configurable font size and text colour.</p>
+
+        <h2>Ports and connections</h2>
+        <p>Component nodes have small circular <strong>ports</strong> on their edges. Drag from one port to another to create an edge (connection). Edges represent data flow, delegation, or interaction between components.</p>
+        <ul>
+            <li><strong>Input ports</strong> appear on the left side of a node.</li>
+            <li><strong>Output ports</strong> appear on the right side of a node.</li>
+        </ul>
+        <p>You can connect any output port to any input port. The edge colour and line style can be customised in the <a href="inspector.html">Inspector</a>.</p>
+
+        <h2>Node defaults</h2>
+        <p>Each node type has configurable default appearance settings (colour, size, font) in <a href="settings.html">Settings</a> under the Components, Annotations, or Shapes sections.</p>
+    </main>
+    <nav class="see-also">
+        <h2>See Also</h2>
+        <ul>
+            <li><a href="node-agent.html">Agent Node Reference</a></li>
+            <li><a href="node-tool.html">Tool Node Reference</a></li>
+            <li><a href="node-knowledge.html">Knowledge Node Reference</a></li>
+            <li><a href="node-human.html">Human Node Reference</a></li>
+            <li><a href="canvas.html">The Canvas</a></li>
+            <li><a href="settings.html">Settings</a></li>
+        </ul>
+    </nav>
+</body>
+</html>

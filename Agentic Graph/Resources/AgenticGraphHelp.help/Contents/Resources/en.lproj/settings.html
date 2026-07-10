@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="AppleTitle" content="Agentic Graph Help">
+    <meta name="description" content="Configure LLM providers, analysis patterns, node defaults, and sizing parameters.">
+    <meta name="keywords" content="settings, preferences, LLM, provider, API key, patterns, defaults, node defaults, sizing parameters, latency parameters, configuration, tier, caching, concurrency, architecture, language, Japanese, Korean">
+    <title>Settings</title>
+    <link rel="stylesheet" href="shared/help.css">
+</head>
+<body>
+    <header>
+        <h1>Settings</h1>
+    </header>
+    <main>
+        <p>Access Settings by clicking the gear button at the bottom of the sidebar palette, or by choosing <strong>Agentic Graph &gt; Settings</strong> from the menu bar (<kbd>&#8984;</kbd><kbd>,</kbd>). The settings view replaces the workspace in the current window &mdash; click the back arrow to return to your graph. Settings are stored in your Application Support folder and persist across all projects and sessions.</p>
+
+        <p>Settings are organised into sections in the left sidebar: General (the application language), Components, Annotations, and Shapes (for node defaults), Analysis (the LLM provider, configuration, pattern library, and Prompt Analysis), Sizing (for infrastructure calculation parameters), and Latency (for the latency estimator's timings).</p>
+
+        <h2>General</h2>
+
+        <h3>Language</h3>
+        <p>Agentic Graph is localised into 14 languages: English, Spanish, French, German, Brazilian Portuguese, Italian, Greek, Polish, Turkish, Czech, Arabic, Finnish, Japanese, and Korean. The Language picker sets the language for the whole interface. Because the language is applied as the app starts, a change takes effect after a restart &mdash; when you pick a new language you can choose to restart immediately or to apply it on the next launch. The choice is stored with your other settings and is independent of the macOS system language.</p>
+
+        <h2>Node Defaults</h2>
+
+        <p>Node defaults control the initial appearance and metadata of newly created nodes. When you drag a node type from the sidebar palette onto the canvas, it inherits the defaults configured here. Changes to defaults only affect nodes created after the change &mdash; existing nodes on the canvas are not modified.</p>
+
+        <h3>Components</h3>
+        <p>Default settings for Agent, Tool, Knowledge, and Human nodes. Each component type has its own settings page with:</p>
+        <ul>
+            <li><strong>Default colour</strong> &mdash; The banner colour that new nodes of this type will have. Useful if your team has a colour convention (e.g. all agents blue, all tools orange) and you want to enforce it from the start.</li>
+            <li><strong>Default size</strong> &mdash; The initial width and height of new nodes on the canvas.</li>
+            <li><strong>Default font size</strong> &mdash; The title text size for new nodes.</li>
+            <li><strong>Default metadata values</strong> &mdash; Pre-fill metadata fields so new nodes start with sensible values. For example, you might set the default Agent framework to "LangChain" if that's what your team uses, or set the default Tool error handling to "Retry" so new tools don't start with "None".</li>
+        </ul>
+        <p>Setting good defaults saves time and promotes consistency across your team. If everyone on your project uses the same framework and deployment model, configure those as defaults rather than filling them in manually on every node.</p>
+
+        <h3>Annotations</h3>
+        <p>Default appearance for Comment nodes &mdash; colour, size, and font size. Comments are visual annotations with no functional metadata, so their defaults are purely about appearance.</p>
+
+        <h3>Shapes</h3>
+        <p>Default appearance for Rectangle, Rounded Rectangle, Oval, and Text shape nodes. Each shape type has its own settings for line colour, fill colour, fill enabled/disabled, and size. Text shapes additionally have font size and text colour defaults.</p>
+
+        <h2>Analysis</h2>
+
+        <h3>LLM Provider</h3>
+        <p>The AI model configuration used for architecture analysis. Analysis requires an LLM to evaluate your graph against the pattern library, so this must be configured before you can run an analysis.</p>
+
+        <h3>Provider</h3>
+        <p>The LLM service to connect to. The available providers depend on what's supported by the app. Each provider has its own authentication method and model catalog.</p>
+
+        <h3>API Key</h3>
+        <p>Your authentication credential for the selected provider. This is stored locally on your Mac in the Application Support folder &mdash; it is never transmitted anywhere except to the selected LLM provider during analysis. If your organisation requires API keys to be rotated, remember to update this when the key changes. The app does not validate the key until you run an analysis, so check for authentication errors in the analysis output if things aren't working.</p>
+
+        <h3>Model</h3>
+        <p>The specific model to use for analysis (e.g. a particular model version or size). Larger, more capable models produce more nuanced analysis findings but cost more per run and take longer. For routine checks during development, a smaller model may be sufficient; for a formal architecture review, use the most capable model available. The model choice doesn't affect which patterns are evaluated &mdash; all enabled patterns run regardless &mdash; but it affects the quality of the LLM's reasoning about each pattern.</p>
+
+        <h3>Analysis Depth</h3>
+        <p>Controls how thoroughly the LLM evaluates each pattern. Standard depth gives faster, more concise results suitable for iterative development. Deep analysis takes longer but produces more detailed reasoning, considers more edge cases, and is more likely to catch subtle issues. Use deep analysis for formal reviews and milestone checkpoints.</p>
+
+        <h3>Thinking Level</h3>
+        <p>Controls the reasoning effort of the model. Higher thinking levels allow the model to spend more time reasoning through complex patterns before producing findings. This is particularly valuable for patterns that require understanding the relationships between multiple nodes (e.g. "does this agent have a fallback path if its primary tool fails?") rather than just checking individual node properties. Higher thinking levels increase both quality and cost.</p>
+
+        <h3>Analysis Patterns</h3>
+        <p>The pattern library is the heart of the analysis feature. Each pattern describes an architectural concern that the LLM evaluates against your graph. The built-in library ships with patterns covering Foundational, Operational, Security, and Performance categories.</p>
+
+        <p>In the Patterns settings page you can:</p>
+        <ul>
+            <li><strong>Enable or disable individual patterns</strong> &mdash; Turn off patterns that aren't relevant to your project. For example, if you're building an internal tool with no compliance requirements, you might disable the compliance-related patterns to reduce noise in your analysis results.</li>
+            <li><strong>Filter by category</strong> &mdash; View patterns in a specific category to manage them as a group.</li>
+            <li><strong>Import patterns</strong> &mdash; Load patterns from a JSON file. You can choose to merge (add new patterns while keeping existing ones) or replace (overwrite the entire library). This is how you share custom patterns across a team &mdash; one person creates the patterns, exports them, and everyone else imports the file.</li>
+            <li><strong>Export patterns</strong> &mdash; Save the current pattern library to a JSON file for sharing or backup.</li>
+            <li><strong>Reset to defaults</strong> &mdash; Restore the built-in pattern library, discarding any customisations. Use this if your pattern library gets into a bad state or if you want to start fresh after a major update.</li>
+        </ul>
+
+        <p>Custom patterns follow the same structure as built-in ones: a name, category, severity level, description of what to look for, and the evaluation prompt that the LLM uses to check the pattern against your graph. Creating effective custom patterns requires understanding both the architectural concern you're checking for and how to prompt an LLM to evaluate it accurately.</p>
+
+        <h3>Prompt Analysis</h3>
+        <p>Settings for the <a href="prompt-analysis.html">Prompt Analysis</a> tab. Two translation languages control the translate buttons that appear next to the prompt field: a primary target and an optional reverse target. Leaving a language blank hides its button.</p>
+        <p>The page also exposes the two prompts that drive the analysis &mdash; the <strong>system prompt</strong> sent to the model, and the <strong>user message template</strong>. The template supports placeholders (<code>{{framing}}</code>, <code>{{agentContext}}</code>, and <code>{{prompt}}</code>) that are filled in for each run. Editing these changes how the analysis behaves; a Reset button restores each one to its default.</p>
+
+        <h2>Sizing</h2>
+
+        <h3>Parameters</h3>
+        <p>All values used by the <a href="sizing.html">Sizing</a> estimator are configurable here. The defaults are based on general industry rules of thumb for agentic workloads, but every system is different &mdash; adjust these to match your specific environment, infrastructure costs, and performance requirements.</p>
+
+        <h3>Tier Thresholds</h3>
+        <p>The agent and tool count boundaries that determine which sizing tier a graph falls into. Each tier has four configurable values:</p>
+        <ul>
+            <li><strong>Max Agents</strong> &mdash; The maximum number of agents for this tier. If your graph has more agents than this threshold, it moves to the next tier up.</li>
+            <li><strong>Max Tools</strong> &mdash; The maximum number of tools for this tier. Like agents, exceeding this threshold bumps the graph to the next tier.</li>
+            <li><strong>vCPU</strong> &mdash; The number of virtual CPU cores allocated for this tier (per base user count).</li>
+            <li><strong>RAM (GB)</strong> &mdash; The amount of memory in gigabytes allocated for this tier (per base user count).</li>
+        </ul>
+        <p>The default tiers are: Simple (1 agent, 1 tool, 1 vCPU, 5 GB), Medium (5 agents, 10 tools, 4 vCPU, 20 GB), Hard (unlimited, 18 vCPU, 90 GB). If your infrastructure uses different instance types or has different cost profiles, adjust these to match. For example, if your cloud provider's standard instance has 8 vCPU and 32 GB RAM, you might adjust the Medium tier to match that instance size.</p>
+
+        <h3>Base User Count</h3>
+        <p>The baseline number of users that the tier resource values are calculated for (default 100). All vCPU and RAM values in the tier table are "per this many users". When the <a href="project-metadata.html">Team Size</a> in your project metadata differs from this baseline, the Sizing estimator scales resources proportionally. For example, if the base is 100 users and your Team Size is 500, resource estimates are multiplied by 5. Adjust this if your organisation's standard sizing methodology uses a different baseline (e.g. 50 users, 1000 users).</p>
+
+        <h3>Concurrency Multiplier</h3>
+        <p>The range of concurrent inference requests generated by each delegating agent. The defaults (5 low, 15 high) represent the observation that a single agent with delegation enabled can fan out work to multiple sub-agents, each requiring their own LLM inference call. The Sizing estimator uses the low and high values to generate a concurrency range in the workload profile.</p>
+
+        <p>If your agents use simple delegation (one agent delegates to one other), the low end is appropriate. If you have complex orchestration patterns where a supervisor fans out to many workers simultaneously, increase the high end. For systems with no delegation at all, these values don't affect the calculations since only delegating agents trigger the multiplier.</p>
+
+        <h3>Caching Estimates</h3>
+        <p>The estimated impact of caching on cost and latency, expressed as percentage ranges:</p>
+        <ul>
+            <li><strong>Cost savings (min/max %)</strong> &mdash; The percentage reduction in inference costs when caching tools are present. Defaults: 60&ndash;90%. Prompt prefix caching (reusing computed attention from static prompt prefixes) is the primary driver. The actual savings depend on how much of your prompts are static vs dynamic &mdash; agents with long, stable system prompts benefit most.</li>
+            <li><strong>Latency reduction (min/max %)</strong> &mdash; The percentage reduction in response time when caching tools are present. Defaults: 50&ndash;85%. Cached prompt prefixes skip the computation for the cached portion, directly reducing time-to-first-token. The actual reduction depends on the ratio of cached to uncached tokens in each request.</li>
+        </ul>
+        <p>If your system has been in production and you have real caching metrics, replace the defaults with your actual observed values. If you're using a provider that doesn't support prompt caching, set these to 0% to remove caching from the estimates.</p>
+
+        <h3>Architecture Components</h3>
+        <p>Maps tool categories to the three architecture tiers (Front Door, Agent Runtime, Inference). This controls how the Sizing estimator's <a href="sizing.html">architecture decomposition</a> determines which components are present in each tier and which are missing.</p>
+
+        <p>Each tier shows a list of tool categories as toggle chips. If a category is toggled on for a tier, the Sizing estimator will check whether your graph has tools of that category and mark them as present or missing in the architecture view:</p>
+        <ul>
+            <li><strong>Front Door</strong> &mdash; The entry point tier. By default includes Caching, Routing, and Security categories. These are the tools that handle request throttling, authentication, and caching before requests reach the agent layer.</li>
+            <li><strong>Agent Runtime</strong> &mdash; The core execution tier. By default includes Guardrail, Monitoring, Workflow, and Feedback categories. These are the tools that support agents during execution &mdash; validating outputs, tracking performance, managing workflows, and collecting feedback.</li>
+            <li><strong>Inference</strong> &mdash; The LLM backend tier. By default includes Testing categories. This tier also checks for deployment target and model assignments, but the tool category mapping specifically checks for testing and validation tools in the inference layer.</li>
+        </ul>
+        <p>If your organisation uses a different architectural model (e.g. a four-tier architecture with a separate data tier), you can adjust the mappings to match. Add categories to the tier where they're architecturally relevant, and remove categories that don't apply.</p>
+
+        <h3>Reset to Defaults</h3>
+        <p>Restores all sizing parameters to their original values. Use this if you've been experimenting with values and want to return to the baseline, or if parameter changes have produced unexpected results and you want a known-good starting point. A confirmation dialog prevents accidental resets.</p>
+
+        <h2>Latency</h2>
+
+        <h3>Parameters</h3>
+        <p>All timings used by the <a href="load-simulation.html">Load Simulation</a> estimator are configurable here. The defaults are general rules of thumb for agentic workloads &mdash; replace them with figures you have measured in your own environment for a more accurate estimate. Changes take effect immediately.</p>
+
+        <h3>Agent Inference Time</h3>
+        <p>The number of seconds one LLM call takes, broken down by agent <a href="node-agent.html">Complexity</a> &mdash; Deterministic, Conditional, Reasoning, and Open-ended. A reasoning step costs more than a deterministic one, so more complex agents are estimated to spend longer in each reasoning loop.</p>
+
+        <h3>Tool Call Latency</h3>
+        <p>The number of seconds one tool call takes, broken down by tool <a href="node-tool.html">Type</a> &mdash; OpenAI, MCP, Python, API, Shell, LangChain, Flow, and Custom. These figures are used for any tool that does not have its own Expected Duration set. Synchronous tool times add up; asynchronous tools overlap, so only the slowest one counts.</p>
+
+        <h3>Reasoning Loops</h3>
+        <p>How much of an agent's Max Iterations budget is actually executed, expressed as a fraction:</p>
+        <ul>
+            <li><strong>Typical fraction</strong> &mdash; The share of the iteration limit used in an ordinary run (default 0.35). An agent with a limit of 10 runs roughly 4 loops in a typical case.</li>
+            <li><strong>p95 fraction</strong> &mdash; The share used in a worst-case run (default 0.9). Most of the iteration budget is consumed.</li>
+        </ul>
+
+        <h3>Tail Estimate</h3>
+        <p>The <strong>p95 call multiplier</strong> (default 1.6&times;) is applied on top of the p95 reasoning loops to account for tail variability &mdash; slow network hops, queueing, and cold starts that a typical run avoids. This is what separates the p95 headline figure from the typical one.</p>
+
+        <h3>Reset to Defaults</h3>
+        <p>Restores all latency parameters to their original values. A confirmation dialog prevents accidental resets.</p>
+    </main>
+    <nav class="see-also">
+        <h2>See Also</h2>
+        <ul>
+            <li><a href="analysis.html">Analysis</a></li>
+            <li><a href="sizing.html">Sizing</a></li>
+            <li><a href="load-simulation.html">Load Simulation</a></li>
+            <li><a href="node-types.html">Node Types</a></li>
+            <li><a href="project-metadata.html">Project Metadata</a></li>
+        </ul>
+    </nav>
+</body>
+</html>

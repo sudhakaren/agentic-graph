@@ -1,0 +1,225 @@
+:root {
+    --text: #1d1d1f;
+    --bg: #ffffff;
+    --secondary: #6e6e73;
+    --border: #d2d2d7;
+    --code-bg: #f5f5f7;
+    --accent: #0071e3;
+    --kbd-bg: #e8e8ed;
+    --tip-bg: rgba(0, 113, 227, 0.08);
+    --note-bg: #f5f5f7;
+    --table-stripe: #fafafa;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text: #f5f5f7;
+        --bg: #1d1d1f;
+        --secondary: #a1a1a6;
+        --border: #424245;
+        --code-bg: #2c2c2e;
+        --accent: #2997ff;
+        --kbd-bg: #3a3a3c;
+        --tip-bg: rgba(41, 151, 255, 0.1);
+        --note-bg: #2c2c2e;
+        --table-stripe: #2c2c2e;
+    }
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 20px 24px 40px;
+    line-height: 1.55;
+    font-size: 13px;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Headings */
+h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    letter-spacing: -0.3px;
+}
+h2 {
+    font-size: 17px;
+    font-weight: 600;
+    margin-top: 28px;
+    margin-bottom: 8px;
+}
+h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 20px;
+    margin-bottom: 6px;
+}
+
+/* Paragraphs and lists */
+p {
+    margin-bottom: 10px;
+}
+ul, ol {
+    margin: 8px 0 12px 20px;
+}
+li {
+    margin-bottom: 4px;
+}
+
+/* Links */
+a {
+    color: var(--accent);
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+/* Inline code and kbd */
+code {
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-family: "SF Mono", Menlo, monospace;
+    font-size: 12px;
+}
+kbd {
+    display: inline-block;
+    background: var(--kbd-bg);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    min-width: 20px;
+    text-align: center;
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 13px;
+}
+th, td {
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+}
+th {
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+tr:nth-child(even) td {
+    background: var(--table-stripe);
+}
+
+/* Callouts */
+.tip, .note {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin: 14px 0;
+    font-size: 13px;
+}
+.tip {
+    background: var(--tip-bg);
+}
+.tip::before {
+    content: "Tip: ";
+    font-weight: 600;
+}
+.note {
+    background: var(--note-bg);
+}
+.note::before {
+    content: "Note: ";
+    font-weight: 600;
+}
+
+/* Definition lists for node types etc. */
+dl {
+    margin: 10px 0;
+}
+dt {
+    font-weight: 600;
+    margin-top: 12px;
+}
+dd {
+    margin-left: 16px;
+    margin-top: 2px;
+    color: var(--secondary);
+}
+
+/* See Also navigation */
+nav.see-also {
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+nav.see-also h2 {
+    font-size: 14px;
+    margin-top: 0;
+    margin-bottom: 8px;
+}
+nav.see-also ul {
+    list-style: none;
+    margin-left: 0;
+}
+nav.see-also li {
+    margin-bottom: 4px;
+}
+nav.see-also li::before {
+    content: "\203A\00a0";
+    color: var(--secondary);
+}
+
+/* Landing page specific */
+.landing-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+.landing-header img {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 12px;
+}
+.topic-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 16px 0;
+}
+.topic-card {
+    padding: 14px 16px;
+    border-radius: 8px;
+    background: var(--note-bg);
+    text-decoration: none;
+    color: var(--text);
+    transition: background 0.15s;
+}
+.topic-card:hover {
+    background: var(--tip-bg);
+    text-decoration: none;
+}
+.topic-card h3 {
+    margin: 0 0 4px;
+    font-size: 13px;
+}
+.topic-card p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--secondary);
+}

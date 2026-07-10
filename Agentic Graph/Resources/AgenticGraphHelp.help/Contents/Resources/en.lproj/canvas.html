@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="AppleTitle" content="Agentic Graph Help">
+    <meta name="description" content="Learn how to navigate and interact with the Agentic Graph canvas.">
+    <meta name="keywords" content="canvas, pan, zoom, scroll, drag, select, marquee, connect, align, distribute, arrange, group, visibility, cut, undo, redo, z-order">
+    <title>The Canvas</title>
+    <link rel="stylesheet" href="shared/help.css">
+</head>
+<body>
+    <header>
+        <h1>The Canvas</h1>
+    </header>
+    <main>
+        <p>The canvas is an infinite two-dimensional surface where you build your graph. It supports panning, zooming, and various selection and arrangement tools.</p>
+
+        <h2>Navigation</h2>
+        <table>
+            <tr>
+                <th>Action</th>
+                <th>How</th>
+            </tr>
+            <tr>
+                <td>Pan</td>
+                <td>Two-finger scroll on a trackpad</td>
+            </tr>
+            <tr>
+                <td>Zoom</td>
+                <td>Pinch on a trackpad, or the scroll wheel on a mouse</td>
+            </tr>
+            <tr>
+                <td>Zoom to fit</td>
+                <td>Use the zoom bar at the bottom of the canvas</td>
+            </tr>
+        </table>
+        <p>The zoom bar in the bottom-left corner displays the current zoom percentage and provides four controls:</p>
+        <ul>
+            <li><strong>Zoom out (&minus;)</strong> &mdash; Decreases the zoom level one step.</li>
+            <li><strong>Zoom percentage</strong> &mdash; Shows the current zoom level as a percentage.</li>
+            <li><strong>Zoom in (+)</strong> &mdash; Increases the zoom level one step.</li>
+            <li><strong>Fit to content</strong> &mdash; Adjusts zoom and scroll so the entire graph fits in the visible area.</li>
+            <li><strong>Lock toggle</strong> &mdash; When locked, trackpad pinch and scroll-wheel zoom are disabled so you can scroll the canvas without accidentally changing the zoom level. The zoom in/out buttons still work when locked.</li>
+        </ul>
+
+        <h2>Node Type Visibility</h2>
+        <p>Each node type in the sidebar palette has an eye icon toggle. Click it to hide or show all nodes of that type on the canvas. Hidden nodes are not deleted &mdash; they are simply not rendered, making it easier to focus on a specific part of your architecture. For example, you might hide all shape and comment nodes to see just the functional components, or hide tools to focus on agent-to-agent delegation paths. Hidden node types have a slashed-eye icon in the sidebar. Edges connected to hidden nodes are also hidden.</p>
+
+        <h2>Adding Nodes</h2>
+        <p>Drag a node type from the sidebar palette and drop it onto the canvas. The node appears at the drop position with default settings.</p>
+
+        <h2>Selecting</h2>
+        <ul>
+            <li><strong>Click</strong> a node or edge to select it.</li>
+            <li><strong>Click empty canvas</strong> to deselect everything.</li>
+            <li><strong>Marquee select</strong> &mdash; click and drag on an empty area of the canvas to draw a selection rectangle. All nodes within the rectangle are selected.</li>
+            <li><strong>Shift-click</strong> to add or remove individual nodes from a multi-selection.</li>
+        </ul>
+
+        <h2>Moving and resizing</h2>
+        <ul>
+            <li><strong>Drag</strong> a selected node to move it. If multiple nodes are selected, they all move together.</li>
+            <li><strong>Resize</strong> by dragging the resize handle at the bottom-right corner of a node.</li>
+        </ul>
+
+        <h2>Connecting nodes</h2>
+        <ol>
+            <li>Hover over a port dot on a component node &mdash; the port highlights.</li>
+            <li>Click and drag from the port toward another node.</li>
+            <li>Release on a compatible port to create an edge.</li>
+        </ol>
+        <p>Edges are drawn as bezier curves with optional arrowheads. You can customise the colour and line style of each edge in the Inspector.</p>
+
+        <h2>Arranging</h2>
+        <p>The <strong>Arrange</strong> menu provides alignment and distribution tools for multi-selected nodes:</p>
+        <ul>
+            <li><strong>Align Left</strong> (<kbd>&#8984;</kbd><kbd>&#8997;</kbd><kbd>[</kbd>) &mdash; Align selected nodes to their leftmost edge.</li>
+            <li><strong>Align Right</strong> (<kbd>&#8984;</kbd><kbd>&#8997;</kbd><kbd>]</kbd>) &mdash; Align selected nodes to their rightmost edge.</li>
+            <li><strong>Align Top / Bottom / Centre Horizontally / Centre Vertically</strong> &mdash; Additional alignment options.</li>
+            <li><strong>Distribute Horizontally / Vertically</strong> &mdash; Space selected nodes evenly.</li>
+        </ul>
+
+        <h2>Grouping</h2>
+        <p>Select multiple nodes and choose <strong>Arrange &gt; Group</strong> (<kbd>&#8984;</kbd><kbd>G</kbd>) to group them. Grouped nodes move and resize as a unit. Use <strong>Ungroup</strong> (<kbd>&#8984;</kbd><kbd>&#8679;</kbd><kbd>G</kbd>) to separate them.</p>
+
+        <h2>Copy, Cut, and Paste</h2>
+        <p>Use the standard <kbd>&#8984;</kbd><kbd>C</kbd> and <kbd>&#8984;</kbd><kbd>V</kbd> to copy and paste selected nodes. Pasted nodes appear offset from the originals. <kbd>&#8984;</kbd><kbd>X</kbd> (Cut) copies the selected nodes and then deletes them from the canvas in one step. <kbd>&#8984;</kbd><kbd>A</kbd> selects all nodes on the canvas.</p>
+
+        <h2>Undo and Redo</h2>
+        <p>Most canvas operations support undo (<kbd>&#8984;</kbd><kbd>Z</kbd>) and redo (<kbd>&#8984;</kbd><kbd>&#8679;</kbd><kbd>Z</kbd>). This includes adding and deleting nodes, moving and resizing nodes, creating and removing edges, editing node and edge properties, and paste operations. The undo stack is per-window and persists as long as the window is open.</p>
+
+        <h2>Shape Z-Order</h2>
+        <p>Shape nodes (rectangles, rounded rectangles, ovals, and text) can be layered in front of or behind other shapes. When a shape is selected, the inspector shows four z-order buttons:</p>
+        <ul>
+            <li><strong>Forward</strong> &mdash; Moves the shape one layer up.</li>
+            <li><strong>Backward</strong> &mdash; Moves the shape one layer down.</li>
+            <li><strong>To Front</strong> &mdash; Moves the shape to the very front, above all other shapes.</li>
+            <li><strong>To Back</strong> &mdash; Moves the shape to the very back, behind all other shapes.</li>
+        </ul>
+        <p>Z-order only affects the stacking of shape nodes relative to each other. Component nodes (agents, tools, knowledge, humans) always render above shapes.</p>
+
+        <h2>Dark Mode</h2>
+        <p>Each window has its own light/dark mode setting, toggled via the toolbar. This is independent of the system appearance.</p>
+    </main>
+    <nav class="see-also">
+        <h2>See Also</h2>
+        <ul>
+            <li><a href="node-types.html">Node Types</a></li>
+            <li><a href="inspector.html">Inspector</a></li>
+            <li><a href="keyboard-shortcuts.html">Keyboard Shortcuts</a></li>
+        </ul>
+    </nav>
+</body>
+</html>

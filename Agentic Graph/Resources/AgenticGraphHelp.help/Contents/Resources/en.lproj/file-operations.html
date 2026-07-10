@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="AppleTitle" content="Agentic Graph Help">
+    <meta name="description" content="Save, open, export, and manage versions of your Agentic Graph projects.">
+    <meta name="keywords" content="file, save, open, export, import, merge, combine, PNG, HTML, markdown, version, snapshot, ag file, ZIP, watsonx, orchestrate, crewai, langgraph, openai agents, autogen, ag2">
+    <title>Files &amp; Export</title>
+    <link rel="stylesheet" href="shared/help.css">
+</head>
+<body>
+    <header>
+        <h1>Files &amp; Export</h1>
+    </header>
+    <main>
+        <h2>The .ag file format</h2>
+        <p>Projects are saved as <code>.ag</code> files &mdash; ZIP archives containing a JSON graph definition, an optional preview image, and version snapshots. You can share <code>.ag</code> files with anyone who has Agentic Graph installed.</p>
+
+        <h2>Saving</h2>
+        <table>
+            <tr>
+                <th>Action</th>
+                <th>Shortcut</th>
+            </tr>
+            <tr>
+                <td>Save</td>
+                <td><kbd>&#8984;</kbd><kbd>S</kbd></td>
+            </tr>
+            <tr>
+                <td>Save As</td>
+                <td><kbd>&#8984;</kbd><kbd>&#8679;</kbd><kbd>S</kbd></td>
+            </tr>
+        </table>
+        <p>The title bar shows a dot indicator when there are unsaved changes. On close, you are prompted to save if there are unsaved modifications.</p>
+
+        <h2>Opening</h2>
+        <table>
+            <tr>
+                <th>Action</th>
+                <th>Shortcut</th>
+            </tr>
+            <tr>
+                <td>Open</td>
+                <td><kbd>&#8984;</kbd><kbd>O</kbd></td>
+            </tr>
+            <tr>
+                <td>Open Recent</td>
+                <td>File &gt; Open Recent</td>
+            </tr>
+        </table>
+        <p>You can also drag an <code>.ag</code> file onto the Dock icon or onto a blank canvas window to open it. If the file is already open in another window, that window is brought to the front instead of opening a duplicate.</p>
+        <p>When you open a file while a blank, untitled window exists (no nodes, no file, no unsaved changes), the file loads into that window rather than creating a new one. This keeps your workspace tidy when opening files from the Finder or the Open Recent menu.</p>
+
+        <h2>Export</h2>
+        <p>Export options are available from the <strong>File &gt; Export</strong> submenu and from the toolbar when the relevant inspector tab is active:</p>
+        <ul>
+            <li><strong>PNG</strong> &mdash; Exports the visible graph as a high-resolution image.</li>
+            <li><strong>Analysis Report (HTML)</strong> &mdash; Exports the analysis findings as a standalone HTML report. Also available from the toolbar when the Analysis tab is active.</li>
+            <li><strong>Analysis Report (Markdown)</strong> &mdash; Exports the analysis findings as a Markdown file, suitable for pasting into wikis, READMEs, or documentation systems.</li>
+            <li><strong>Sizing Report (HTML)</strong> &mdash; Exports the sizing estimates as a standalone HTML report. Available from the toolbar when the Sizing tab is active.</li>
+            <li><strong>Sizing Report (Markdown)</strong> &mdash; Exports the sizing estimates as a Markdown file.</li>
+            <li><strong>Markdown Documentation (ZIP)</strong> &mdash; Exports a complete project documentation package as a ZIP archive. This includes the project metadata, all node and edge definitions, analysis findings, and sizing estimates &mdash; everything in your project as structured Markdown files. Use this for archiving, sharing with stakeholders who don't have Agentic Graph, or feeding into other documentation pipelines.</li>
+            <li><strong>Analysis Patterns (JSON)</strong> &mdash; Exports the current analysis pattern library to a JSON file for sharing with teammates or backing up custom patterns. Also available from Settings &gt; Analysis &gt; Patterns.</li>
+        </ul>
+
+        <h2>Import</h2>
+
+        <h3>Framework projects</h3>
+        <p>The <strong>File &gt; Import</strong> menu can read a project written for a popular agent framework and turn it into a graph. Choose the importer, pick the project's folder, and Agentic Graph scans it for agents, tools, and knowledge sources and lays them out as connected nodes:</p>
+        <ul>
+            <li><strong>watsonx Orchestrate Project</strong> (<kbd>&#8984;</kbd><kbd>&#8679;</kbd><kbd>I</kbd>) &mdash; IBM watsonx Orchestrate ADK projects: native agent YAML specs, Python <code>@tool</code> functions, OpenAPI tool specs, and knowledge bases.</li>
+            <li><strong>CrewAI Project</strong> &mdash; CrewAI crews: the <code>agents.yaml</code> and <code>tasks.yaml</code> configuration plus tool definitions.</li>
+            <li><strong>LangGraph Project</strong> &mdash; LangGraph applications: the <code>langgraph.json</code> manifest and the graph's nodes and edges.</li>
+            <li><strong>OpenAI Agents SDK Project</strong> &mdash; Projects built on the OpenAI Agents SDK: <code>Agent</code> definitions, their tools, and handoffs.</li>
+            <li><strong>AutoGen / AG2 Project</strong> &mdash; AutoGen / AG2 scripts: assistant and user-proxy agents, group chats, and registered tools.</li>
+        </ul>
+        <p>An imported graph is a starting point &mdash; review the generated nodes and fill in any metadata the source project doesn't capture. Each import also adds an "Imported" version snapshot, so the pristine import stays available to compare against as you edit.</p>
+
+        <h3>Analysis patterns</h3>
+        <ul>
+            <li><strong>Analysis Patterns (Replace)</strong> &mdash; Import pattern definitions from a JSON file, replacing the entire current pattern library. Use this when adopting a team-standard pattern set. Available from the File &gt; Import menu and from Settings &gt; Analysis &gt; Patterns.</li>
+            <li><strong>Analysis Patterns (Merge)</strong> &mdash; Import pattern definitions from a JSON file, adding new patterns while keeping existing ones. Use this to augment your library without losing customisations. Available from the File &gt; Import menu and from Settings &gt; Analysis &gt; Patterns.</li>
+        </ul>
+
+        <h2>Merge</h2>
+        <p>Where <strong>Import</strong> turns an external project into a new graph, <strong>Merge</strong> brings one into the graph you already have open, updating it in place. The <strong>File &gt; Merge</strong> submenu offers two kinds.</p>
+
+        <h3>Merge a watsonx Orchestrate project</h3>
+        <p>Re-imports a watsonx Orchestrate project folder and reconciles it against the current graph. Each agent, tool, and knowledge source is matched to the node a previous import produced for it: matched nodes have their imported fields refreshed, nodes for newly-added source items are created, and nodes whose source artifact has been removed are deleted. Connections within the imported subgraph are re-derived from the source, while any you drew yourself are preserved. Use this to pull source-side changes into a graph you have already annotated, without losing your own edits, layout, or comments.</p>
+
+        <h3>Merge an Agentic Graph project</h3>
+        <p>Combines another <code>.ag</code> file into the current graph, matching nodes and edges by identity. Items the two files share are refreshed from the merged file; items only in the merged file are added below the existing graph; items only in the current graph are kept. When the two files are related &mdash; a branched copy &mdash; nodes that are absent from the merged file are left in place and selected, so you can review them. Use this to compose a graph from separately-built pieces, or to fold a branched copy back together.</p>
+
+        <p>Every merge writes a version snapshot before it starts and another when it finishes, so you can compare the before and after states &mdash; or revert &mdash; from the Version History sheet. A summary then reports how many nodes were updated, added, and removed.</p>
+
+        <h2>Version snapshots</h2>
+        <p>Create named snapshots of your project at key milestones:</p>
+        <table>
+            <tr>
+                <th>Action</th>
+                <th>Shortcut</th>
+            </tr>
+            <tr>
+                <td>Create Version</td>
+                <td><kbd>&#8984;</kbd><kbd>&#8997;</kbd><kbd>S</kbd></td>
+            </tr>
+            <tr>
+                <td>Version History</td>
+                <td>File &gt; Versions</td>
+            </tr>
+        </table>
+        <p>Each version stores a complete snapshot of the graph. Versions are saved inside the <code>.ag</code> file.</p>
+        <p>The <strong>Version History</strong> sheet lists every saved version. Each row offers three actions:</p>
+        <ul>
+            <li><strong>Open as Copy</strong> &mdash; Opens the snapshot in a new window as a detached, editable copy (see below).</li>
+            <li><strong>Revert</strong> &mdash; Replaces the current graph with the snapshot. This is undoable.</li>
+            <li><strong>Delete</strong> &mdash; Removes the snapshot from the project.</li>
+        </ul>
+
+        <h3>Opening a version as a copy</h3>
+        <p>Choosing <strong>Open as Copy</strong> on a version opens that snapshot in its own window as a new, untitled document. You can explore and edit it freely &mdash; it is a separate working copy, so your changes never affect the project you opened it from, nor the stored version. To keep the copy, use <strong>Save As</strong> (<kbd>&#8984;</kbd><kbd>&#8679;</kbd><kbd>S</kbd>) to write it to a new <code>.ag</code> file; closing the window without saving discards it.</p>
+
+        <h2>Session restore</h2>
+        <p>Unsaved work is automatically preserved across app launches. If the app is quit with unsaved changes, they are restored when you next open the app.</p>
+    </main>
+    <nav class="see-also">
+        <h2>See Also</h2>
+        <ul>
+            <li><a href="getting-started.html">Getting Started</a></li>
+            <li><a href="analysis.html">Analysis</a></li>
+            <li><a href="sizing.html">Sizing</a></li>
+        </ul>
+    </nav>
+</body>
+</html>

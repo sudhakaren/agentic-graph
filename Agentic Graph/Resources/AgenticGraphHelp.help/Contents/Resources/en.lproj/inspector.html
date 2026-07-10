@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="AppleTitle" content="Agentic Graph Help">
+    <meta name="description" content="Learn about the Inspector sidebar — properties, connections, orphans, ports, versions, and analysis/sizing tabs.">
+    <meta name="keywords" content="inspector, properties, sidebar, detail, node properties, edge properties, multi-select, tabs, orphans, connections, ports, versions, load simulation, latency">
+    <title>Inspector</title>
+    <link rel="stylesheet" href="shared/help.css">
+</head>
+<body>
+    <header>
+        <h1>Inspector</h1>
+    </header>
+    <main>
+        <p>The Inspector is the right sidebar of the main window. It has six tabs, selected via a segmented control at the top: Properties, Comments, Analysis, Sizing, Load Simulation, and Prompt Analysis.</p>
+
+        <div class="tip">Toggle the inspector sidebar visibility using the toolbar button or <strong>View &gt; Inspector</strong> in the menu bar.</div>
+
+        <h2>Properties Tab</h2>
+
+        <p>The Properties tab adapts its content based on what is selected on the canvas.</p>
+
+        <h3>Nothing Selected &mdash; Project View</h3>
+        <p>When nothing is selected, the Properties tab shows the <a href="project-metadata.html">project metadata</a> form (name, description, risk level, team size, etc.). Below the metadata fields, two additional sections appear:</p>
+
+        <h4>Orphans</h4>
+        <p>The Orphans disclosure group lists all component nodes (agents, tools, knowledge sources, and humans) that have no connections to any other node. Orphan nodes often indicate incomplete modelling &mdash; an agent with no tools, a knowledge source nobody queries, or a human participant not wired into any workflow. Each orphan appears as a clickable chip: click it to select the node and pan the canvas to it, making it easy to find and connect stray nodes. The orphan count is shown in the section header.</p>
+
+        <h4>Versions</h4>
+        <p>The Versions disclosure group shows recent <a href="file-operations.html">version snapshots</a> inline in the inspector, giving you quick access to your project history without opening the full Version History sheet. Each entry shows the version name and date.</p>
+
+        <h3>Single Node Selected</h3>
+        <p>Shows the node's title, appearance settings (banner colour, font size, font colour), and type-specific metadata fields. For example, an Agent node shows framework, model, complexity, role, goals, and more. See the individual node reference pages for full field documentation: <a href="node-agent.html">Agent</a>, <a href="node-tool.html">Tool</a>, <a href="node-knowledge.html">Knowledge</a>, <a href="node-human.html">Human</a>.</p>
+
+        <h4>Ports</h4>
+        <p>Component nodes (agents, tools, knowledge sources, and humans) have a Ports section in the inspector where you can manage their input and output ports. Each port appears as a row with its label. You can:</p>
+        <ul>
+            <li><strong>Add a port</strong> &mdash; Click the <strong>+</strong> button to add a new custom-labelled input or output port.</li>
+            <li><strong>Remove a port</strong> &mdash; Click the delete button on a port row to remove it. Any edges connected to that port are also removed.</li>
+            <li><strong>Reorder ports</strong> &mdash; Drag port rows up and down to change the order in which they appear on the node.</li>
+        </ul>
+
+        <h4>Connections</h4>
+        <p>Below the node's metadata fields, a Connections disclosure group lists every edge connected to the selected node. Each connection shows the names of the two endpoints. Click the arrow button on a connection to select that edge (useful for editing its colour or line style). Click the delete button to remove the connection. The connection count is shown in the section header.</p>
+
+        <h3>Single Edge Selected</h3>
+        <p>Shows the edge's appearance settings and the nodes it connects:</p>
+        <ul>
+            <li><strong>Colour</strong> &mdash; The edge's stroke colour. A colour picker lets you change it, and a "Reset to Default" button restores the standard colour.</li>
+            <li><strong>Line style</strong> &mdash; Solid, dashed, or dotted.</li>
+            <li><strong>Connected nodes</strong> &mdash; Shows the source and target node names.</li>
+            <li><strong>Select Connected Nodes</strong> &mdash; A button that selects both endpoint nodes, which is useful when you want to inspect or move the nodes on either side of an edge.</li>
+            <li><strong>Delete Connection</strong> &mdash; Removes the edge from the graph.</li>
+        </ul>
+
+        <h3>Multiple Nodes Selected</h3>
+        <p>A multi-select inspector that lets you batch-edit shared properties like colour, font size, and common metadata fields across all selected nodes. Only fields that are common to all selected node types are shown.</p>
+
+        <h2>Comments Tab</h2>
+        <p>The Comments tab holds free-form notes that travel with your project but stay out of the structured metadata fields. Like the Properties tab, it is context-sensitive:</p>
+        <ul>
+            <li><strong>A node selected</strong> &mdash; Edit a comment attached to that node.</li>
+            <li><strong>An edge selected</strong> &mdash; Edit a comment attached to that connection.</li>
+            <li><strong>Nothing selected</strong> &mdash; Edit a project-level comment.</li>
+        </ul>
+        <p>With two or more objects selected, the tab asks you to narrow the selection to a single node, edge, or the project. Drag the handle below the editor to resize it. Comments are saved inside the <code>.ag</code> file and are included in exported <a href="file-operations.html">HTML reports and Markdown documentation</a>, which makes them a good place for review notes, open questions, or design rationale you want collaborators and stakeholders to see.</p>
+
+        <h2>Analysis Tab</h2>
+        <p>Displays results from the AI-assisted architecture analysis. Shows a summary bar (warnings, recommendations, positives, info), severity filters, and individual finding cards grouped by category. See <a href="analysis.html">Analysis</a> for details.</p>
+
+        <h2>Sizing Tab</h2>
+        <p>Shows infrastructure sizing estimates calculated from the graph structure. Includes workload profile, resource recommendations, architecture decomposition, scaling recommendations, and caching assessment. See <a href="sizing.html">Sizing</a> for details.</p>
+
+        <h2>Load Simulation Tab</h2>
+        <p>The Load Simulation tab estimates how long a selected agent takes to respond, showing a typical and a p95 (worst-case) figure with a breakdown of where the time goes. It is a pure calculation &mdash; no LLM is needed. The tab is active only when one Agent node is selected. This is a beta feature; see <a href="load-simulation.html">Load Simulation</a> for full details.</p>
+
+        <h2>Prompt Analysis Tab</h2>
+        <p>The Prompt Analysis tab uses AI to review a single agent's prompt for clarity, scope, and routing problems. It is active only when one Agent node is selected. See <a href="prompt-analysis.html">Prompt Analysis</a> for full details.</p>
+
+        <h2>Node Chips</h2>
+        <p>In the Analysis and Sizing tabs, related nodes appear as clickable chips coloured by node type. Click a chip to select the node and pan the canvas to it. Double-click a chip to also switch to the Properties tab so you can immediately edit the node's fields.</p>
+    </main>
+    <nav class="see-also">
+        <h2>See Also</h2>
+        <ul>
+            <li><a href="analysis.html">Analysis</a></li>
+            <li><a href="prompt-analysis.html">Prompt Analysis</a></li>
+            <li><a href="sizing.html">Sizing</a></li>
+            <li><a href="load-simulation.html">Load Simulation</a></li>
+            <li><a href="project-metadata.html">Project Metadata</a></li>
+        </ul>
+    </nav>
+</body>
+</html>

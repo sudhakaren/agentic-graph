@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="AppleTitle" content="Agentic Graph Help">
+    <meta name="description" content="Estimate agent latency with the Load Simulation tab — typical and p95 response times calculated from the graph.">
+    <meta name="keywords" content="load simulation, latency, performance, p95, typical, response time, latency budget, expected duration, beta, estimate, delegation, slow, timeout">
+    <title>Load Simulation</title>
+    <link rel="stylesheet" href="shared/help.css">
+</head>
+<body>
+    <header>
+        <h1>Load Simulation</h1>
+    </header>
+    <main>
+        <p>The Load Simulation tab in the Inspector estimates how long a selected agent takes to respond. Like Sizing, it is a pure calculation &mdash; no LLM is needed, and the estimate updates instantly as you modify the graph or its timing parameters.</p>
+
+        <div class="note">Load Simulation is a <strong>beta</strong> feature. It currently estimates per-agent latency; whole-solution simulation and latency-vs-load charts are planned for a future release.</div>
+
+        <h2>Using the tab</h2>
+        <p>Select the Load Simulation tab (the line-chart icon) in the Inspector's segmented control, then select a single Agent node on the canvas. The tab shows an estimate for that agent and all the work it triggers. With nothing selected, with an edge or a non-agent node selected, or with several nodes selected, the tab simply prompts you to select one agent.</p>
+
+        <h2>Typical and p95</h2>
+        <p>Two headline figures summarise the estimate:</p>
+        <dl>
+            <dt>Typical</dt>
+            <dd>The latency of an ordinary run &mdash; the agent uses a fraction of its iteration budget and tools respond at their expected speed.</dd>
+            <dt>p95</dt>
+            <dd>A worst-case run near the 95th percentile &mdash; the agent uses most of its iteration budget and a tail-variability multiplier is applied on top. Size timeouts and capacity against this figure, not the typical one.</dd>
+        </dl>
+
+        <h2>Latency budget</h2>
+        <p>If the selected agent has a <a href="node-agent.html">Latency Budget</a> set, the tab compares it against the p95 estimate. A green checkmark confirms the estimate is within budget; an orange warning means the p95 estimate exceeds it, and the p95 figure itself is highlighted. This makes it easy to spot agents at risk of breaching their response-time targets before you deploy.</p>
+
+        <h2>Typical breakdown</h2>
+        <p>The breakdown shows where the typical time goes:</p>
+        <ul>
+            <li><strong>LLM inference</strong> &mdash; Time spent in the agent's reasoning loops. Each loop is one LLM call; the per-call time depends on the agent's <a href="node-agent.html">Complexity</a>, and the loop count is derived from its Max Iterations.</li>
+            <li><strong>Sync tools</strong> &mdash; Synchronous tool calls run one after another, so their times add up.</li>
+            <li><strong>Async tools</strong> &mdash; Asynchronous tool calls overlap, so only the slowest one contributes.</li>
+            <li><strong>Delegated agents</strong> &mdash; The combined time of every agent this one delegates to, followed recursively down the chain.</li>
+        </ul>
+        <p>When an agent has an Expected Duration set, its inference and tool rows are replaced by a single <strong>Agent processing</strong> row &mdash; the override stands in for the whole heuristic (see below).</p>
+
+        <h2>Sync-to-async hint</h2>
+        <p>When an agent calls synchronous tools, the tab also estimates what the typical latency would be if those tools ran asynchronously instead. If the saving is meaningful, a hint shows the lower figure &mdash; a quick way to spot agents where switching a tool's Execution mode to Async would pay off.</p>
+
+        <h2>How the estimate works</h2>
+        <p>Starting from the selected agent, the estimator adds up:</p>
+        <ul>
+            <li>The agent's reasoning loops &mdash; loop count &times; the per-call inference time for its complexity.</li>
+            <li>Its synchronous tool calls, summed, plus its slowest asynchronous tool call.</li>
+            <li>Every delegated agent's full subtree, summed down the chain. Cycles are detected so no agent is counted twice.</li>
+        </ul>
+        <p>Tools are counted once per run, not once per reasoning loop &mdash; only the LLM "thinking" repeats per loop. The p95 figure uses a higher share of the iteration budget and then applies a tail multiplier.</p>
+
+        <h2>Expected Duration override</h2>
+        <p>Every Agent and Tool node has an <strong>Expected Duration</strong> field. When set, it overrides the heuristic for that node &mdash; the estimator uses your value instead of one calculated from complexity or tool type. This is the most reliable way to sharpen an estimate: if you have measured a tool's real response time or an agent's real processing time, enter it. Durations accept values like <code>800ms</code>, <code>1.5s</code>, or a range such as <code>2-4s</code> (a range resolves to its upper bound). A number with no unit, or any unit other than <code>ms</code>, is read as seconds.</p>
+
+        <h2>Configuring parameters</h2>
+        <p>The rule-of-thumb timings &mdash; inference time per complexity level, tool time per type, the typical and p95 iteration fractions, and the p95 tail multiplier &mdash; are all configurable in <a href="settings.html">Settings</a> under Latency &gt; Parameters. Tune them to match what you observe in your own systems; the estimate updates immediately.</p>
+    </main>
+    <nav class="see-also">
+        <h2>See Also</h2>
+        <ul>
+            <li><a href="inspector.html">Inspector</a></li>
+            <li><a href="sizing.html">Sizing</a></li>
+            <li><a href="node-agent.html">Agent Node</a></li>
+            <li><a href="settings.html">Settings</a></li>
+        </ul>
+    </nav>
+</body>
+</html>

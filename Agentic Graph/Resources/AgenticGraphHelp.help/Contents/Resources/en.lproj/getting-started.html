@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="AppleTitle" content="Agentic Graph Help">
+    <meta name="description" content="Get started with Agentic Graph by creating your first project.">
+    <meta name="keywords" content="getting started, new project, create, canvas, sidebar, palette, tutorial">
+    <title>Getting Started</title>
+    <link rel="stylesheet" href="shared/help.css">
+</head>
+<body>
+    <header>
+        <h1>Getting Started</h1>
+    </header>
+    <main>
+        <p>Agentic Graph is a visual editor for designing agentic AI system architectures. You build graphs by placing nodes on a canvas and connecting them with edges to model how agents, tools, knowledge sources, and humans interact.</p>
+
+        <h2>The workspace</h2>
+        <p>The main window has three columns:</p>
+        <ul>
+            <li><strong>Sidebar palette</strong> (left) &mdash; Draggable node types organised into Components, Annotations, and Shapes. A Settings button at the bottom opens the preferences view.</li>
+            <li><strong>Canvas</strong> (centre) &mdash; An infinite pannable, zoomable surface where you build your graph.</li>
+            <li><strong>Inspector</strong> (right) &mdash; Tabs for Properties, Comments, Analysis, Sizing, and Prompt Analysis. Shows details for the selected node, edge, or the project as a whole.</li>
+        </ul>
+
+        <h2>Create a new project</h2>
+        <ol>
+            <li>Choose <strong>File &gt; New</strong> (<kbd>&#8984;</kbd><kbd>N</kbd>) to open a blank canvas, or <strong>File &gt; New Window</strong> (<kbd>&#8984;</kbd><kbd>&#8679;</kbd><kbd>N</kbd>) to open an additional window.</li>
+            <li>Drag a node from the sidebar palette onto the canvas. Start with an <strong>Agent</strong> node &mdash; the core building block of any agentic system.</li>
+            <li>Add <strong>Tool</strong> and <strong>Knowledge</strong> nodes to represent the capabilities and data sources your agents will use.</li>
+            <li>Connect nodes by dragging from one port dot to another. Edges represent the flow of information or delegation between components.</li>
+        </ol>
+
+        <h2>Save your work</h2>
+        <p>Press <kbd>&#8984;</kbd><kbd>S</kbd> to save. Projects are saved as <code>.ag</code> files &mdash; a portable format you can share with others. The title bar shows a dot indicator when there are unsaved changes.</p>
+
+        <div class="tip">Open an existing project with <kbd>&#8984;</kbd><kbd>O</kbd>, or drag an <code>.ag</code> file onto the Dock icon.</div>
+
+        <h2>Next steps</h2>
+        <p>Once you have a basic graph, try:</p>
+        <ul>
+            <li>Selecting a node and filling in its metadata in the <a href="inspector.html">Inspector</a>.</li>
+            <li>Running an <a href="analysis.html">Architecture Analysis</a> to find patterns and anti-patterns.</li>
+            <li>Reviewing an agent's instructions with <a href="prompt-analysis.html">Prompt Analysis</a>.</li>
+            <li>Checking the <a href="sizing.html">Sizing</a> tab for infrastructure estimates.</li>
+            <li>Adding <a href="project-metadata.html">project metadata</a> like risk level, team size, and deployment target.</li>
+        </ul>
+    </main>
+    <nav class="see-also">
+        <h2>See Also</h2>
+        <ul>
+            <li><a href="node-types.html">Node Types</a></li>
+            <li><a href="canvas.html">The Canvas</a></li>
+            <li><a href="keyboard-shortcuts.html">Keyboard Shortcuts</a></li>
+        </ul>
+    </nav>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="AppleTitle" content="Agentic Graph Help">
+    <meta name="description" content="Tool node fields reference — type, category, auth, endpoint, error handling, and more.">
+    <meta name="keywords" content="tool, node, type, category, endpoint, auth, error handling, idempotent, async, sync, timeout, MCP, API, OpenAI, expected duration, latency">
+    <title>Tool Node</title>
+    <link rel="stylesheet" href="shared/help.css">
+</head>
+<body>
+    <header>
+        <h1>Tool Node</h1>
+    </header>
+    <main>
+        <p>A Tool is an external capability that agents can invoke &mdash; an API call, a database query, a script, a guardrail check, or any other discrete action. Tools are what give agents the ability to interact with the outside world. Without tools, an agent can only reason about text; with tools, it can search databases, send emails, process payments, and validate outputs.</p>
+
+        <p>Tools have both input and output ports. Input ports receive requests from agents (or other tools in a pipeline); output ports can feed results to downstream nodes. A well-documented tool node tells your team exactly what this capability does, how it's secured, and what happens when it fails.</p>
+
+        <h2>Node Fields</h2>
+
+        <h3>Title</h3>
+        <p>The display name of the tool, shown on the canvas and referenced in analysis findings, sizing reports, and caching assessments. Use a clear, action-oriented name that describes what the tool does &mdash; "Payment Gateway", "Document Search", "Email Sender" &mdash; rather than technical identifiers like "api_v2_endpoint_3".</p>
+
+        <h3>Risk</h3>
+        <p>The risk level of this tool's operations. Think about what happens if this tool is called incorrectly or maliciously: a read-only search tool is Low risk, but a tool that transfers money or deletes records is High risk. The <a href="analysis.html">Analysis</a> engine cross-references risk level with your architecture &mdash; a High risk tool connected directly to an agent with no guardrail tool in between will generate a warning. Values: None, Low, Medium, High.</p>
+
+        <h2>Tool Fields</h2>
+
+        <h3>Type</h3>
+        <p>The implementation technology behind this tool. This documents how the tool is built and what runtime it needs:</p>
+        <ul>
+            <li><strong>OpenAI</strong> &mdash; An OpenAI function-calling tool. The agent describes the tool's schema to the LLM, which generates structured function calls. This is the most common pattern for agents built on OpenAI models.</li>
+            <li><strong>MCP</strong> &mdash; A Model Context Protocol server. MCP provides a standardised way for agents to discover and invoke tools, with built-in schema negotiation and streaming. Growing in adoption as a vendor-neutral tool protocol.</li>
+            <li><strong>Python</strong> &mdash; A Python function or script. The tool runs as Python code, either in-process or as a subprocess. Common for data processing, ML inference, and prototyping.</li>
+            <li><strong>API</strong> &mdash; A REST or GraphQL endpoint. The tool makes HTTP requests to an external service. The most common type for integrating with existing enterprise systems.</li>
+            <li><strong>Shell</strong> &mdash; A command-line tool or script. The tool executes a shell command and captures the output. Useful for system administration, file operations, or calling legacy tools.</li>
+            <li><strong>LangChain</strong> &mdash; A LangChain tool wrapper. LangChain provides a standardised tool interface with built-in parsing, validation, and error handling.</li>
+            <li><strong>Flow</strong> &mdash; A workflow or orchestration step. Rather than a single action, this tool represents a multi-step process (e.g. a CI/CD pipeline trigger or an approval workflow).</li>
+            <li><strong>Custom</strong> &mdash; For tool types that don't fit the categories above.</li>
+        </ul>
+
+        <h3>Category</h3>
+        <p>The functional role of this tool in your architecture. Category is one of the most important fields for tools because the <a href="sizing.html">Sizing</a> estimator uses it to map tools to architecture tiers (Front Door, Agent Runtime, Inference) and to identify caching candidates. Choose the category that best describes what this tool does for the system:</p>
+        <ul>
+            <li><strong>General</strong> &mdash; A standard business-logic tool that doesn't fit a specific infrastructure category.</li>
+            <li><strong>Guardrail</strong> &mdash; Validates, filters, or constrains agent behaviour. Guardrail tools are checked by Analysis &mdash; agents with High risk and no connected guardrail tool trigger warnings.</li>
+            <li><strong>Monitoring</strong> &mdash; Observes system behaviour, logs events, or reports metrics. Mapped to the Agent Runtime architecture tier.</li>
+            <li><strong>Caching</strong> &mdash; Stores and retrieves cached data to reduce redundant computation or API calls. The presence of caching tools dramatically affects Sizing estimates &mdash; prompt prefix caching alone can deliver 60&ndash;90% cost savings.</li>
+            <li><strong>Testing</strong> &mdash; Validates outputs, runs assertions, or performs quality checks. Mapped to the Inference architecture tier.</li>
+            <li><strong>Feedback</strong> &mdash; Collects user feedback, ratings, or corrections. Important for continuous improvement loops.</li>
+            <li><strong>Workflow</strong> &mdash; Manages multi-step processes, state machines, or approval chains. Mapped to the Agent Runtime tier.</li>
+            <li><strong>Delivery</strong> &mdash; Sends outputs to users or external systems (email, notifications, file generation).</li>
+            <li><strong>Security</strong> &mdash; Handles authentication, authorisation, encryption, or audit logging. Mapped to the Front Door architecture tier.</li>
+            <li><strong>Routing</strong> &mdash; Directs requests to the appropriate handler based on content or rules. Mapped to the Front Door tier.</li>
+            <li><strong>Extraction</strong> &mdash; Pulls data from documents, images, or structured sources.</li>
+            <li><strong>Processing</strong> &mdash; Transforms, aggregates, or enriches data.</li>
+        </ul>
+
+        <h3>Execution</h3>
+        <p>Whether the tool runs synchronously or asynchronously. This has major implications for your system's performance characteristics:</p>
+        <ul>
+            <li><strong>Sync</strong> &mdash; The calling agent waits for the tool to complete before continuing. Simple to reason about, but every sync tool call adds directly to the agent's response time. If an agent calls three sync tools sequentially, each taking 2 seconds, that's 6 seconds of latency just from tool calls.</li>
+            <li><strong>Async</strong> &mdash; The agent can continue working (or call other tools) while this tool runs in the background. Enables parallelism and better throughput, but requires callback handling and makes the control flow more complex. The agent needs to know how to handle the result when it arrives.</li>
+        </ul>
+        <p>The <a href="sizing.html">Sizing</a> estimator counts sync vs async tools to assess concurrency patterns and generate scaling recommendations. A system with all sync tools has a simpler execution model but potential latency bottlenecks.</p>
+
+        <h3>Inputs</h3>
+        <p>The parameters the tool accepts, documented as a brief schema (e.g. "query: String, limit: Int, filters: [String]"). This is the tool's interface contract &mdash; what an agent needs to provide when calling it. Clear input documentation helps during architecture reviews because reviewers can verify that the calling agent has access to the data the tool requires.</p>
+
+        <h3>Outputs</h3>
+        <p>What the tool returns (e.g. "results: [Document], total_count: Int"). Documents the response format so downstream consumers know what to expect. Like Inputs, this helps verify that the data flow through your graph is coherent &mdash; that the output of one tool matches what the next node in the chain needs.</p>
+
+        <h3>Auth Method</h3>
+        <p>How the tool authenticates with its backend service. This is critical security metadata:</p>
+        <ul>
+            <li><strong>None</strong> &mdash; No authentication required. Acceptable for internal tools on a private network, but a red flag for anything internet-facing.</li>
+            <li><strong>API Key</strong> &mdash; A static key sent in request headers. Simple but requires key rotation and secure storage.</li>
+            <li><strong>OAuth</strong> &mdash; OAuth 2.0 flow with token exchange. More secure and supports scoped permissions, but adds complexity.</li>
+            <li><strong>Bearer Token</strong> &mdash; A JWT or similar token sent in the Authorization header. Common for service-to-service communication.</li>
+        </ul>
+        <p>The <a href="analysis.html">Analysis</a> engine checks auth methods as part of its security pattern evaluation &mdash; tools accessing external services with "None" authentication are flagged.</p>
+
+        <h3>Endpoint</h3>
+        <p>The URL or address of the tool's service (e.g. "https://api.example.com/v1" or "grpc://internal-service:50051"). Documents where the tool connects to, which is essential for infrastructure planning, network policy configuration, and troubleshooting. For internal tools, this might be a service mesh address; for external tools, it's the API's public URL.</p>
+
+        <h3>Timeout</h3>
+        <p>The maximum time in seconds before the tool call is abandoned (e.g. "30"). Without a timeout, a tool call to an unresponsive service will hang indefinitely, blocking the agent and consuming resources. The <a href="analysis.html">Analysis</a> engine flags tools without timeouts as operational risks. Set timeouts based on the tool's expected response time plus a reasonable buffer &mdash; if the tool normally responds in 2 seconds, a 10-second timeout gives plenty of headroom while still protecting against hung connections.</p>
+
+        <h3>Expected Duration</h3>
+        <p>A measured or known figure for how long one call to this tool takes &mdash; for example "800ms" or "1.5s". This field feeds the <a href="load-simulation.html">Load Simulation</a> estimator: when it is set, the estimator uses your value instead of the generic per-type estimate. If you have measured a tool's real response time, entering it here is the single most effective way to improve a latency estimate. Durations accept milliseconds ("800ms"), seconds ("1.5s"), or a range ("2-4s", which resolves to the upper bound). This is distinct from Timeout: Timeout is the point at which a slow call is abandoned, whereas Expected Duration is how long the call normally takes when it succeeds.</p>
+
+        <h3>Error Handling</h3>
+        <p>What happens when the tool call fails. This is one of the most important operational fields because tool failures are inevitable in production:</p>
+        <ul>
+            <li><strong>None</strong> &mdash; No error handling. The failure propagates up to the agent, which may or may not handle it gracefully. This is flagged by <a href="analysis.html">Analysis</a> as a risk because unhandled tool errors can crash agent loops or produce incorrect outputs.</li>
+            <li><strong>Retry</strong> &mdash; Automatically retry the call (typically with exponential backoff). Good for transient failures like network timeouts or rate limiting, but dangerous for non-idempotent operations &mdash; retrying a payment tool could charge the customer twice.</li>
+            <li><strong>Fallback</strong> &mdash; Use an alternative tool or cached result when the primary tool fails. Provides graceful degradation but requires a fallback path to be designed and tested.</li>
+            <li><strong>Skip</strong> &mdash; Continue the workflow without the tool's result. Appropriate when the tool's output is optional or enrichment-only (e.g. a sentiment analysis step that adds value but isn't required).</li>
+            <li><strong>Abort</strong> &mdash; Stop the entire workflow and report the error. The safest option for critical tools where proceeding without their result would produce wrong or dangerous outcomes.</li>
+        </ul>
+
+        <h3>Idempotent</h3>
+        <p>Whether calling the tool multiple times with the same input always produces the same result with no side effects. A search tool is idempotent &mdash; searching for "quarterly report" ten times returns the same results. A "send email" tool is not &mdash; calling it ten times sends ten emails. This field matters for two reasons: idempotent tools are safe to retry on failure, and the <a href="sizing.html">Sizing</a> estimator highlights idempotent tools as candidates for result caching, which can significantly reduce costs and latency.</p>
+
+        <h3>Data Volume</h3>
+        <p>The typical size of data the tool handles per call (e.g. "Small", "Large", "Paginated", "10KB per request", "Up to 50MB"). This helps assess infrastructure requirements &mdash; tools that process large data volumes may need more memory, longer timeouts, and streaming support. It also affects network planning and cost estimation.</p>
+
+        <h2>Details</h2>
+
+        <h3>Detail</h3>
+        <p>Free-text notes for anything that doesn't fit the structured fields. Use this for rate limit documentation ("Max 100 requests/minute, 429 responses trigger backoff"), implementation notes ("Wraps the internal DocumentService gRPC API"), known issues ("Returns empty results for queries under 3 characters"), dependencies ("Requires the auth-service to be running"), or links to API documentation.</p>
+
+        <h2>Ports</h2>
+        <p>Tools have both input and output ports. Input ports receive invocation requests from agents or other tools; output ports can feed results downstream. You can add multiple custom-labelled ports to represent different interaction types &mdash; for example, a "Query" input and an "Error" output alongside the standard "Result" output.</p>
+
+        <h2>Appearance</h2>
+
+        <h3>Banner Color</h3>
+        <p>The colour of the node's header banner on the canvas. Defaults to the standard tool colour (orange). You might customise this to visually group tools by category &mdash; for example, all security tools in red, all caching tools in green.</p>
+
+        <h3>Title Font Size</h3>
+        <p>The size of the title text on the canvas (default 13).</p>
+
+        <h3>Title Font Color</h3>
+        <p>The colour of the title text (default white).</p>
+
+        <h2>Lock</h2>
+        <p>Lock states protect nodes from accidental changes. Click the lock button to cycle through states:</p>
+        <ul>
+            <li><strong>Unlocked</strong> &mdash; Fully editable and movable.</li>
+            <li><strong>Position Locked</strong> &mdash; Can't be moved, but fields are editable.</li>
+            <li><strong>Details Locked</strong> &mdash; Fields are read-only, but the node can be moved.</li>
+            <li><strong>Fully Locked</strong> &mdash; Cannot be moved or edited.</li>
+        </ul>
+    </main>
+    <nav class="see-also">
+        <h2>See Also</h2>
+        <ul>
+            <li><a href="node-types.html">All Node Types</a></li>
+            <li><a href="node-agent.html">Agent Node</a></li>
+            <li><a href="node-knowledge.html">Knowledge Node</a></li>
+            <li><a href="node-human.html">Human Node</a></li>
+        </ul>
+    </nav>
+</body>
+</html>

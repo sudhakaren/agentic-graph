@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="AppleTitle" content="Agentic Graph Help">
+    <meta name="description" content="Run AI-assisted architecture analysis to detect patterns and anti-patterns.">
+    <meta name="keywords" content="analysis, architecture, patterns, anti-patterns, findings, warnings, recommendations, LLM, AI, review">
+    <title>Analysis</title>
+    <link rel="stylesheet" href="shared/help.css">
+</head>
+<body>
+    <header>
+        <h1>Analysis</h1>
+    </header>
+    <main>
+        <p>The Analysis feature uses AI to review your agentic architecture against a library of known patterns and anti-patterns. It identifies design issues, highlights good practices, and suggests improvements.</p>
+
+        <div class="note">Analysis is AI-assisted. Findings should be verified by a qualified reviewer.</div>
+
+        <h2>Running an analysis</h2>
+        <ol>
+            <li>Ensure you have an LLM provider configured in <a href="settings.html">Settings</a> (under Analysis &gt; LLM Provider).</li>
+            <li>Choose <strong>Analysis &gt; Analyze Architecture</strong> (<kbd>&#8984;</kbd><kbd>&#8679;</kbd><kbd>A</kbd>), or click the play button in the Analysis tab of the Inspector.</li>
+            <li>The analysis runs each pattern concurrently. Progress is shown in real time.</li>
+            <li>Click the stop button to cancel a running analysis.</li>
+        </ol>
+
+        <h2>Understanding findings</h2>
+        <p>Each finding has a severity level:</p>
+        <table>
+            <tr>
+                <th>Severity</th>
+                <th>Meaning</th>
+            </tr>
+            <tr>
+                <td>Warning</td>
+                <td>An anti-pattern or design flaw that should be addressed.</td>
+            </tr>
+            <tr>
+                <td>Recommendation</td>
+                <td>A suggested improvement that would strengthen the architecture.</td>
+            </tr>
+            <tr>
+                <td>Positive</td>
+                <td>A good practice detected in the design.</td>
+            </tr>
+            <tr>
+                <td>Info</td>
+                <td>An observation that provides context but requires no action.</td>
+            </tr>
+        </table>
+
+        <h2>Filtering and navigation</h2>
+        <p>Use the filter bar at the top of the Analysis tab to show only specific severity levels. Findings are grouped by category (Foundational, Operational, Security, Performance, etc.).</p>
+        <p>Each finding card may include related node chips &mdash; click one to select the node on the canvas, or double-click to also switch to the Properties tab.</p>
+
+        <h2>Pattern categories</h2>
+        <p>The built-in pattern library covers:</p>
+        <ul>
+            <li><strong>Foundational</strong> &mdash; Core architectural principles like agent-as-business-process, autonomy boundaries, and delegation chains.</li>
+            <li><strong>Operational</strong> &mdash; Runtime concerns like error handling, monitoring, timeouts, and recovery paths.</li>
+            <li><strong>Security</strong> &mdash; Authentication, data sensitivity, guardrails, and compliance.</li>
+            <li><strong>Performance</strong> &mdash; Latency budgets, caching, async patterns, and throughput.</li>
+        </ul>
+
+        <h2>Fields analysed per component</h2>
+        <p>Every pattern inspects the structured metadata on each node. Pattern signals reference fields by their <strong>internal field name</strong> &mdash; the same identifiers used in the <code>.ag</code> JSON format. When you write a custom pattern, use these exact names in the anti-pattern and positive signal text so the LLM can match them against node data.</p>
+
+        <p>The tables below list every field the built-in patterns reference. For each field you get: the label shown in the Inspector, the internal field name, the allowed values (enum members, boolean, or free text), and how the analysis engine uses it. For full conceptual descriptions, see the per-component reference pages.</p>
+
+        <div class="note">All four node kinds (Agent, Tool, Knowledge, Human) share a <strong>Risk</strong> level that is serialised as <code>knowledgeRisk</code> (for historical compatibility with the original data model). Valid values: <code>none</code>, <code>low</code>, <code>medium</code>, <code>high</code>. Patterns cross-check this against guardrails, human oversight, and connected components regardless of the node kind.</div>
+
+        <h3>Agent fields</h3>
+        <p>See <a href="node-agent.html">Agent Node</a> for the full reference.</p>
+        <table>
+            <tr><th>Label</th><th>Field name</th><th>Values</th><th>Used for</th></tr>
+            <tr><td>Type</td><td><code>agentType</code></td><td><code>worker</code>, <code>supervisor</code>, <code>router</code>, <code>specialist</code>, <code>orchestrator</code>, <code>custom</code></td><td>Role consistency (Router shouldn't execute work), delegation chain validation, multi-agent orchestration checks.</td></tr>
+            <tr><td>Framework</td><td><code>agentFramework</code></td><td><code>langchain</code>, <code>langgraph</code>, <code>crewai</code>, <code>watsonx</code>, <code>autogen</code>, <code>semanticKernel</code>, <code>openaiAgents</code>, <code>custom</code></td><td>Framework-mixing risk detection, runtime compatibility checks.</td></tr>
+            <tr><td>Model</td><td><code>agentModel</code></td><td>Free text (e.g. <code>gpt-4o</code>, <code>claude-3.5-sonnet</code>)</td><td>Model-diversity flagging, complexity/model mismatch detection.</td></tr>
+            <tr><td>Role</td><td><code>agentRole</code></td><td>Free text</td><td>Cross-checked against connected tools/knowledge to confirm the role is supported.</td></tr>
+            <tr><td>Goal</td><td><code>agentGoal</code></td><td>Free text</td><td>Verified that connected components actually support the stated objective.</td></tr>
+            <tr><td>Instructions</td><td><code>agentInstructions</code></td><td>Free text (multi-line)</td><td>Flagged as operational risk if missing; checked for over-broad / under-focused wording (Monolithic Mega-Prompt).</td></tr>
+            <tr><td>Memory</td><td><code>agentMemory</code></td><td><code>none</code>, <code>shortTerm</code>, <code>longTerm</code>, <code>both</code></td><td>Stateful agents without persistence, stateless agents needing context, Invisible State anti-pattern detection.</td></tr>
+            <tr><td>Max Iterations</td><td><code>agentMaxIterations</code></td><td>Free text (e.g. <code>5</code>, <code>10</code>)</td><td>Agents without an iteration cap flagged as runaway-cost risk.</td></tr>
+            <tr><td>Delegation</td><td><code>agentCanDelegate</code></td><td><code>true</code>, <code>false</code></td><td>Delegation chain depth calculation, supervision requirement checks.</td></tr>
+            <tr><td>Complexity</td><td><code>agentComplexity</code></td><td><code>deterministic</code>, <code>conditional</code>, <code>reasoning</code>, <code>openEnded</code></td><td>Agent Washing detection (deterministic agents that should be tools), Open-Ended agents without guardrails.</td></tr>
+            <tr><td>Prompt Management</td><td><code>agentPromptManagement</code></td><td><code>none</code>, <code>hardcoded</code>, <code>templated</code>, <code>versioned</code>, <code>registry</code></td><td>Production systems with <code>none</code> flagged as governance gap.</td></tr>
+            <tr><td>Context Strategy</td><td><code>agentContextStrategy</code></td><td><code>none</code>, <code>fixed</code>, <code>prioritised</code>, <code>windowed</code>, <code>compressed</code></td><td>Long-running or multi-turn agents without a strategy flagged.</td></tr>
+            <tr><td>Observability</td><td><code>agentObservability</code></td><td><code>none</code>, <code>basic</code>, <code>structured</code>, <code>full</code></td><td>Agents with <code>none</code> flagged as operational risk.</td></tr>
+            <tr><td>Latency Budget</td><td><code>agentLatencyBudget</code></td><td>Free text (e.g. <code>300ms</code>, <code>3s</code>)</td><td>Cross-checked against sync tool count &mdash; tight budgets with many sync tools are flagged.</td></tr>
+            <tr><td>Cost Budget</td><td><code>agentCostBudget</code></td><td>Free text (e.g. <code>$0.10/call</code>)</td><td>Absence flagged as governance gap.</td></tr>
+        </table>
+
+        <h3>Tool fields</h3>
+        <p>See <a href="node-tool.html">Tool Node</a> for the full reference.</p>
+        <table>
+            <tr><th>Label</th><th>Field name</th><th>Values</th><th>Used for</th></tr>
+            <tr><td>Type</td><td><code>toolType</code></td><td><code>openai</code>, <code>mcp</code>, <code>python</code>, <code>api</code>, <code>shell</code>, <code>langchain</code>, <code>flow</code>, <code>custom</code></td><td>Tool soup detection (many <code>mcp</code> tools on one agent), <code>flow</code> tools recognised as workflow steps.</td></tr>
+            <tr><td>Category</td><td><code>toolCategory</code></td><td><code>general</code>, <code>guardrail</code>, <code>monitoring</code>, <code>caching</code>, <code>testing</code>, <code>feedback</code>, <code>workflow</code>, <code>delivery</code>, <code>security</code>, <code>routing</code>, <code>extraction</code>, <code>processing</code></td><td>Presence checks &mdash; e.g. high-risk agents without <code>guardrail</code> tools flagged; compliance processes without <code>workflow</code> tools flagged.</td></tr>
+            <tr><td>Execution (async)</td><td><code>toolAsync</code></td><td><code>true</code>, <code>false</code></td><td>Async tools without result handling flagged; sync tools on tight-latency agents flagged.</td></tr>
+            <tr><td>Inputs</td><td><code>toolInputs</code></td><td>Free text (schema description)</td><td>Missing inputs on critical tools flagged as reliability risk (Tool Data Overload).</td></tr>
+            <tr><td>Outputs</td><td><code>toolOutputs</code></td><td>Free text (schema description)</td><td>Combined with Inputs to assess contract completeness.</td></tr>
+            <tr><td>Auth Method</td><td><code>toolAuthMethod</code></td><td><code>none</code>, <code>apiKey</code>, <code>oauth</code>, <code>bearerToken</code></td><td>Sensitive-data tools with <code>none</code> flagged as security issue.</td></tr>
+            <tr><td>Endpoint</td><td><code>toolEndpoint</code></td><td>Free text (URL or connection string)</td><td>External endpoints checked for error handling and timeouts.</td></tr>
+            <tr><td>Timeout</td><td><code>toolTimeout</code></td><td>Free text (e.g. <code>5s</code>, <code>30s</code>)</td><td>Missing timeout flagged as latency/hang risk.</td></tr>
+            <tr><td>Error Handling</td><td><code>toolErrorHandling</code></td><td><code>none</code>, <code>retry</code>, <code>fallback</code>, <code>skip</code>, <code>abort</code></td><td>Critical-path tools with <code>none</code> flagged.</td></tr>
+            <tr><td>Idempotent</td><td><code>toolIdempotent</code></td><td><code>true</code>, <code>false</code></td><td>Non-idempotent tools paired with <code>retry</code> error handling flagged as correctness risk.</td></tr>
+            <tr><td>Data Volume</td><td><code>toolDataVolume</code></td><td>Free text (e.g. <code>small</code>, <code>large</code>, <code>&gt;1MB/call</code>)</td><td>High-volume tools lacking pagination/streaming flagged; used by Sizing for data-plane estimates.</td></tr>
+        </table>
+
+        <h3>Knowledge fields</h3>
+        <p>See <a href="node-knowledge.html">Knowledge Node</a> for the full reference.</p>
+        <table>
+            <tr><th>Label</th><th>Field name</th><th>Values</th><th>Used for</th></tr>
+            <tr><td>Data Formats</td><td><code>knowledgeDataFormats</code></td><td>Free text (e.g. <code>PDF, JSON, CSV</code>)</td><td>Diverse formats without normalisation strategy flagged.</td></tr>
+            <tr><td>Size / Quantity</td><td><code>knowledgeSizeQuantity</code></td><td>Free text (e.g. <code>10GB</code>, <code>1M docs</code>)</td><td>Large sources without chunking or retrieval strategy flagged.</td></tr>
+            <tr><td>Location</td><td><code>knowledgeLocation</code></td><td>Free text (e.g. <code>S3</code>, <code>local</code>, <code>vendor API</code>)</td><td>Cross-checked against Sensitivity to flag confidential data on uncontrolled locations.</td></tr>
+            <tr><td>Access Method</td><td><code>knowledgeAccessMethod</code></td><td>Free text (e.g. <code>REST</code>, <code>SQL</code>, <code>filesystem</code>)</td><td>Verified to match data shape and retrieval strategy.</td></tr>
+            <tr><td>Sensitivity</td><td><code>knowledgeSensitivity</code></td><td>Free text (e.g. <code>public</code>, <code>internal</code>, <code>confidential</code>, <code>restricted</code>)</td><td>High-sensitivity sources without auth or guardrails flagged.</td></tr>
+            <tr><td>Update Frequency</td><td><code>knowledgeUpdateFrequency</code></td><td>Free text (e.g. <code>daily</code>, <code>realtime</code>)</td><td>Combined with Versioning Method to flag stale-data risk.</td></tr>
+            <tr><td>Versioning</td><td><code>knowledgeVersioningMethod</code></td><td>Free text (e.g. <code>git</code>, <code>snapshot</code>, <code>none</code>)</td><td>Frequently-updated sources without versioning flagged as auditability gap.</td></tr>
+            <tr><td>Retrieval Strategy</td><td><code>knowledgeRetrievalStrategy</code></td><td><code>none</code>, <code>rag</code>, <code>sql</code>, <code>api</code>, <code>fullDocument</code>, <code>hybrid</code></td><td>Strategy-to-content matching; Invisible State pattern checks for <code>sql</code>/<code>api</code> strategies.</td></tr>
+            <tr><td>Chunking Strategy</td><td><code>knowledgeChunkingStrategy</code></td><td>Free text (e.g. <code>fixed</code>, <code>recursive</code>, <code>semantic</code>)</td><td>Large sources without chunking strategy flagged.</td></tr>
+            <tr><td>Content Type</td><td><code>knowledgeContentType</code></td><td>Free text (e.g. <code>text</code>, <code>structured</code>, <code>binary</code>)</td><td>Influences which retrieval strategies are sensible.</td></tr>
+        </table>
+
+        <h3>Human fields</h3>
+        <p>See <a href="node-human.html">Human Node</a> for the full reference.</p>
+        <table>
+            <tr><th>Label</th><th>Field name</th><th>Values</th><th>Used for</th></tr>
+            <tr><td>Input Channel</td><td><code>humanInputChannel</code></td><td><code>none</code>, <code>email</code>, <code>chat</code>, <code>phone</code>, <code>portal</code>, <code>api</code>, <code>sms</code>, <code>custom</code></td><td>Channel suitability checks; content verification workflow detection.</td></tr>
+            <tr><td>Output Channel</td><td><code>humanChannel</code></td><td><code>none</code>, <code>email</code>, <code>chat</code>, <code>phone</code>, <code>portal</code>, <code>api</code>, <code>sms</code>, <code>custom</code></td><td>Asymmetric flow detection when compared with Input Channel; content delivery path validation.</td></tr>
+            <tr><td>Role</td><td><code>humanRole</code></td><td>Free text (e.g. <code>reviewer</code>, <code>approver</code>, <code>end user</code>)</td><td>Oversight role presence checks on high-risk agents.</td></tr>
+            <tr><td>Language</td><td><code>humanLanguage</code></td><td>Free text (e.g. <code>en</code>, <code>fr</code>)</td><td>Multi-language deployments without localisation flagged.</td></tr>
+            <tr><td>Timezone</td><td><code>humanTimezone</code></td><td>Free text (e.g. <code>UTC</code>, <code>Europe/Dublin</code>)</td><td>SLA and on-call coverage checks.</td></tr>
+            <tr><td>Auth Method</td><td><code>humanAuthMethod</code></td><td>Free text (e.g. <code>SSO</code>, <code>OAuth</code>, <code>password</code>)</td><td>Privileged humans with weak auth flagged.</td></tr>
+            <tr><td>Access Level</td><td><code>humanAccessLevel</code></td><td>Free text (e.g. <code>read-only</code>, <code>contributor</code>, <code>admin</code>)</td><td>Cross-checked with Role to detect privilege mismatches.</td></tr>
+            <tr><td>SLA / Response</td><td><code>humanSLA</code></td><td>Free text (e.g. <code>&lt; 4h</code>, <code>next business day</code>)</td><td>Critical-path humans without SLA flagged.</td></tr>
+            <tr><td>Expected Behaviors</td><td><code>humanBehaviors</code></td><td>Free text</td><td>Verifies approvers and reviewers have defined responsibilities.</td></tr>
+        </table>
+
+        <h3>Example: referencing fields in a custom pattern</h3>
+        <p>When you write a custom pattern in <a href="settings.html">Settings &gt; Analysis &gt; Patterns</a>, use the internal field names and enum values verbatim in the <em>Anti-pattern signals</em> and <em>Positive signals</em> text so the LLM can match them:</p>
+        <table>
+            <tr><th>Field</th><th>Example signal text</th></tr>
+            <tr><td>&nbsp;</td><td><em>Anti-pattern:</em> "Agents with <code>agentMemory=none</code> connected to no knowledge nodes, <code>agentObservability=none</code>, and <code>agentMaxIterations</code> unset."</td></tr>
+            <tr><td>&nbsp;</td><td><em>Positive:</em> "Agents with <code>agentMemory=shortTerm</code> or <code>agentMemory=longTerm</code>, <code>agentObservability=structured</code> or higher, and <code>toolCategory=guardrail</code> tools connected to all <code>agentType=supervisor</code> nodes."</td></tr>
+        </table>
+        <p>The LLM reads the graph as JSON with these exact field names, so matching them in the signal text produces far more accurate findings than referring to display labels.</p>
+
+        <h2>Custom patterns</h2>
+        <p>You can manage the pattern library in <a href="settings.html">Settings</a> under Analysis &gt; Patterns. Patterns can be enabled/disabled, imported from JSON files, or exported for sharing.</p>
+
+        <h2>Analysis depth</h2>
+        <p>The LLM provider settings allow you to configure the analysis depth (standard or deep) and thinking level, which affect the thoroughness and cost of each analysis run.</p>
+    </main>
+    <nav class="see-also">
+        <h2>See Also</h2>
+        <ul>
+            <li><a href="inspector.html">Inspector</a></li>
+            <li><a href="settings.html">Settings</a></li>
+            <li><a href="sizing.html">Sizing</a></li>
+        </ul>
+    </nav>
+</body>
+</html>
