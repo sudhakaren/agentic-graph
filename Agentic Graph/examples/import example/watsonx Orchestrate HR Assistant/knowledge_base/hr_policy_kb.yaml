@@ -1,0 +1,10 @@
+spec_version: v1
+kind: knowledge_base
+name: hr_policy_kb
+description: >
+  The company HR policy handbook, covering benefits eligibility, leave
+  entitlements, the code of conduct, and payroll schedules.
+documents:
+  - hr_handbook.pdf
+  - benefits_guide.pdf
+  - leave_policy.pdf

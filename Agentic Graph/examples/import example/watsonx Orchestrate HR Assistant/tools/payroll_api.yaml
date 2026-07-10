@@ -1,0 +1,22 @@
+openapi: 3.0.0
+info:
+  title: Payroll Tax Service
+  description: Year-end tax document retrieval for the corporate payroll system.
+  version: 1.0.0
+servers:
+  - url: https://api.examplecorp.com/payroll
+paths:
+  /tax-documents/{year}:
+    get:
+      operationId: getTaxDocument
+      summary: Get a year-end tax document
+      description: Returns the year-end tax document for an employee for a given tax year.
+      parameters:
+        - name: year
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: The year-end tax document for the requested tax year.

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analysis — Dubai Business Setup System</title>
+<style>
+    :root { --bg: #ffffff; --fg: #1d1d1f; --muted: #6e6e73; --border: #d2d2d7; --accent: #0066cc; --section-bg: #f5f5f7; }
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) { --bg: #1d1d1f; --fg: #f5f5f7; --muted: #98989d; --border: #424245; --accent: #2997ff; --section-bg: #2c2c2e; }
+    }
+    [data-theme="dark"] { --bg: #1d1d1f; --fg: #f5f5f7; --muted: #98989d; --border: #424245; --accent: #2997ff; --section-bg: #2c2c2e; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; padding: 40px 20px; }
+    .container { max-width: 900px; margin: 0 auto; }
+    h1 { font-size: 2em; margin-bottom: 0.3em; }
+    h2 { font-size: 1.4em; margin-top: 2em; margin-bottom: 0.6em; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.3em; }
+    .overview { font-size: 1.1em; color: var(--muted); margin-bottom: 1.5em; }
+    .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 2em; }
+    .summary-card { background: var(--section-bg); border-radius: 8px; padding: 16px; text-align: center; }
+    .summary-card .count { font-size: 2em; font-weight: 700; }
+    .summary-card .label { font-size: 0.85em; color: var(--muted); }
+    .summary-card.warning .count { color: #ff3b30; }
+    .summary-card.recommendation .count { color: #ff9500; }
+    .summary-card.positive .count { color: #34c759; }
+    .summary-card.info .count { color: #007aff; }
+    .finding { background: var(--section-bg); border-radius: 8px; padding: 16px 20px; margin-bottom: 12px; }
+    .finding.warning { border-left: 4px solid #ff3b30; }
+    .finding.recommendation { border-left: 4px solid #ff9500; }
+    .finding.positive { border-left: 4px solid #34c759; }
+    .finding.info { border-left: 4px solid #007aff; }
+    .finding-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .finding-header .icon { font-size: 1.2em; }
+    .finding-header .title { font-weight: 600; }
+    .finding-header .severity { font-size: 0.75em; text-transform: uppercase; letter-spacing: 0.05em; padding: 2px 7px; border-radius: 4px; font-weight: 600; }
+    .severity-warning { background: #ff3b3015; color: #ff3b30; }
+    .severity-recommendation { background: #ff950015; color: #ff9500; }
+    .severity-positive { background: #34c75915; color: #34c759; }
+    .severity-info { background: #007aff15; color: #007aff; }
+    .finding .summary { margin-bottom: 4px; }
+    .finding .detail { color: var(--muted); font-size: 0.9em; }
+    .finding .nodes { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 4px; }
+    .finding .node-chip { display: inline-block; font-size: 0.8em; padding: 2px 8px; border-radius: 12px; background: var(--bg); border: 1px solid var(--border); }
+    .footer { margin-top: 3em; padding-top: 1em; border-top: 1px solid var(--border); font-size: 0.85em; color: var(--muted); }
+    .theme-toggle { position: fixed; top: 16px; right: 16px; background: var(--section-bg); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; cursor: pointer; font-size: 18px; line-height: 1; color: var(--fg); z-index: 100; }
+    .theme-toggle:hover { background: var(--border); }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="let d=document.documentElement;let t=d.getAttribute('data-theme');d.setAttribute('data-theme',t==='dark'?'light':'dark');this.textContent=t==='dark'?'\u263E':'\u2600\uFE0F'" aria-label="Toggle theme">&#x263E;</button>
+<div class="container">
+<h1>Architecture Analysis</h1>
+<p class="overview">Dubai Business Setup System &mdash; 31 March 2026 at 12:44</p>
+
+<div style="background: var(--section-bg); border-left: 3px solid #ff9500; border-radius: 6px; padding: 10px 14px; margin-bottom: 1.5em; font-size: 0.85em; color: var(--muted);">
+    <strong style="color: var(--fg);">AI Disclaimer:</strong> This analysis was generated with AI. Results may be inaccurate and should be reviewed by a qualified professional before making decisions.
+</div>
+
+<div class="summary-grid">
+    <div class="summary-card warning"><div class="count">12</div><div class="label">Warnings</div></div>
+    <div class="summary-card recommendation"><div class="count">0</div><div class="label">Recommendations</div></div>
+    <div class="summary-card positive"><div class="count">28</div><div class="label">Positive</div></div>
+    <div class="summary-card info"><div class="count">0</div><div class="label">Info</div></div>
+</div>
+<h2>Foundational</h2>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#4 All-or-Nothing Autonomy</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">All-or-Nothing Autonomy anti-pattern detected due to missing risk configurations and lack of human oversight for high‑risk decisions.</p>
+    <p class="detail">Agents do not have knowledgeRisk attributes and the project lacks an overallRiskLevel setting. Although a guardrail tool (Trade Name Check API) exists, no human nodes are connected to agents that would handle high‑risk knowledge, and there is no human‑in‑the‑loop for such scenarios.</p>
+    <div class="nodes"><span class="node-chip">Business Setup Orchestrator</span><span class="node-chip">Jurisdiction Advisor</span><span class="node-chip">Document Preparation Agent</span><span class="node-chip">License &amp; Registration Agent</span><span class="node-chip">Visa &amp; Immigration Agent</span><span class="node-chip">Banking &amp; Finance Agent</span><span class="node-chip">Compliance Agent</span><span class="node-chip">Human</span></div>
+</div>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#5 Passing As-Is Content Through the Model</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Agents handle content without delivery or processing tools and lack human verification channels.</p>
+    <p class="detail">No toolCategory=delivery or processing tools are connected to agents, and the sole human node lacks a configured humanChannel for content review, indicating raw content may be passed through LLMs without safeguards.</p>
+    <div class="nodes"><span class="node-chip">Business Setup Orchestrator</span><span class="node-chip">Jurisdiction Advisor</span><span class="node-chip">Document Preparation Agent</span><span class="node-chip">License &amp; Registration Agent</span><span class="node-chip">Visa &amp; Immigration Agent</span><span class="node-chip">Banking &amp; Finance Agent</span><span class="node-chip">Compliance Agent</span><span class="node-chip">Human</span></div>
+</div>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#6 Chasing Exotic Agent Patterns</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">All agents have delegation enabled, creating unnecessary delegation chains.</p>
+    <p class="detail">Every agent (including the orchestrator and all workers) is configured with delegation=yes, which can lead to excessive hand‑offs and complexity without clear justification.</p>
+    <div class="nodes"><span class="node-chip">Business Setup Orchestrator</span><span class="node-chip">Jurisdiction Advisor</span><span class="node-chip">Document Preparation Agent</span><span class="node-chip">License &amp; Registration Agent</span><span class="node-chip">Visa &amp; Immigration Agent</span><span class="node-chip">Banking &amp; Finance Agent</span><span class="node-chip">Compliance Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#1 Monolithic Mega-Prompt</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Architecture follows a modular multi‑agent design avoiding a monolithic mega‑prompt.</p>
+    <p class="detail">The system includes seven distinct worker agents plus an orchestrator, each with specific role and goal, delegation enabled, and focused prompt management. Presence of a supervisor/orchestrator agent and clear task routing demonstrates good decomposition.</p>
+    <div class="nodes"><span class="node-chip">Business Setup Orchestrator</span><span class="node-chip">Jurisdiction Advisor</span><span class="node-chip">Document Preparation Agent</span><span class="node-chip">License &amp; Registration Agent</span><span class="node-chip">Visa &amp; Immigration Agent</span><span class="node-chip">Banking &amp; Finance Agent</span><span class="node-chip">Compliance Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#2 Agent-as-Business-Process Fallacy</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Appropriate mix of agents and workflow tool for process orchestration.</p>
+    <p class="detail">The Business Setup Orchestrator uses a Process Engine (workflow tool) to manage deterministic steps, while specialized agents perform reasoning and decision-making. This separation aligns with best practices for the Agent-as-Business-Process pattern.</p>
+    <div class="nodes"><span class="node-chip">Business Setup Orchestrator</span><span class="node-chip">Process Engine</span><span class="node-chip">Jurisdiction Advisor</span><span class="node-chip">Document Preparation Agent</span><span class="node-chip">License &amp; Registration Agent</span><span class="node-chip">Visa &amp; Immigration Agent</span><span class="node-chip">Banking &amp; Finance Agent</span><span class="node-chip">Compliance Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#3 Invisible State</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">All agents employ both short‑term and long‑term memory and are linked to relevant knowledge bases for state persistence.</p>
+    <p class="detail">Each of the seven agents (Business Setup Orchestrator, Jurisdiction Advisor, Document Preparation Agent, License &amp; Registration Agent, Visa &amp; Immigration Agent, Banking &amp; Finance Agent, Compliance Agent) has memory=Both and connects to domain‑specific knowledge nodes, enabling durable state storage and retrieval.</p>
+    <div class="nodes"><span class="node-chip">Business Setup Orchestrator</span><span class="node-chip">Jurisdiction Advisor</span><span class="node-chip">Document Preparation Agent</span><span class="node-chip">License &amp; Registration Agent</span><span class="node-chip">Visa &amp; Immigration Agent</span><span class="node-chip">Banking &amp; Finance Agent</span><span class="node-chip">Compliance Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#6 Chasing Exotic Agent Patterns</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Agent types align with task complexity and the agent count is appropriate for the domain.</p>
+    <p class="detail">The system uses a single orchestrator for coordination and worker agents for domain‑specific tasks, matching the complexity of each sub‑process (jurisdiction selection, document handling, licensing, visa, banking, compliance). This reflects a well‑scoped multi‑agent design.</p>
+    <div class="nodes"><span class="node-chip">Jurisdiction Advisor</span><span class="node-chip">Document Preparation Agent</span><span class="node-chip">License &amp; Registration Agent</span><span class="node-chip">Visa &amp; Immigration Agent</span><span class="node-chip">Banking &amp; Finance Agent</span><span class="node-chip">Compliance Agent</span></div>
+</div>
+<h2>Scale &amp; Reliability</h2>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#8 Tool Data Overload</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Missing processing or extraction tools before agents, leading to potential data overload.</p>
+    <p class="detail">The architecture lacks any tool with category=processing or category=extraction in the pipeline before agents consume data, which can cause agents to receive unfiltered raw data and increase cognitive load.</p>
+    <div class="nodes"><span class="node-chip">DET Portal API</span><span class="node-chip">GDRFA e-Services</span><span class="node-chip">MOHRE Portal</span><span class="node-chip">FTA Portal</span><span class="node-chip">Ejari System</span><span class="node-chip">Trade Name Check API</span><span class="node-chip">Observability Service</span><span class="node-chip">Semantic Cache</span><span class="node-chip">Eval Framework</span><span class="node-chip">Feedback Collector</span><span class="node-chip">Process Engine</span><span class="node-chip">Secrets Manager</span></div>
+</div>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#13 Responsiveness Afterthought</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Long-running tools are configured as synchronous (toolAsync=false) without asynchronous handling.</p>
+    <p class="detail">All API tools (e.g., DET Portal API, GDRFA e-Services, FTA Portal) are marked async=no, which can block agents during high-latency operations, indicating responsiveness was added as an afterthought.</p>
+    <div class="nodes"><span class="node-chip">DET Portal API</span><span class="node-chip">GDRFA e-Services</span><span class="node-chip">MOHRE Portal</span><span class="node-chip">FTA Portal</span><span class="node-chip">Ejari System</span><span class="node-chip">Trade Name Check API</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#7 Tool Soup</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Tool usage stays within recommended range and categories are distinct per agent.</p>
+    <p class="detail">The orchestrator connects to 6 tools (within 3‑7 range) and each worker agent connects to 1‑2 tools, with no overlapping toolCategory values among agents. Tools are purpose‑specific (monitoring, caching, testing, security, workflow, API services) and agents receive subsets aligned with their roles.</p>
+    <div class="nodes"><span class="node-chip">Business Setup Orchestrator</span><span class="node-chip">Document Preparation Agent</span><span class="node-chip">License &amp; Registration Agent</span><span class="node-chip">Visa &amp; Immigration Agent</span><span class="node-chip">Banking &amp; Finance Agent</span><span class="node-chip">Compliance Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#8 Tool Data Overload</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">All tools specify inputs, outputs, and dataVolume attributes.</p>
+    <p class="detail">Each tool defines its required inputs and produced outputs, and dataVolume is explicitly set (small), demonstrating good metadata practices that mitigate overload.</p>
+    <div class="nodes"><span class="node-chip">DET Portal API</span><span class="node-chip">GDRFA e-Services</span><span class="node-chip">MOHRE Portal</span><span class="node-chip">FTA Portal</span><span class="node-chip">Ejari System</span><span class="node-chip">Trade Name Check API</span><span class="node-chip">Observability Service</span><span class="node-chip">Semantic Cache</span><span class="node-chip">Eval Framework</span><span class="node-chip">Feedback Collector</span><span class="node-chip">Process Engine</span><span class="node-chip">Secrets Manager</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#9 Agent Washing</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Architecture avoids agent washing by using reasoning agents for complex decisions and leveraging tools/APIs for deterministic operations.</p>
+    <p class="detail">Agents have complexity=Reasoning or Conditional, and deterministic tasks are handled by dedicated tools such as Process Engine and various API services. No deterministic agents detected.</p>
+    <div class="nodes"><span class="node-chip">Business Setup Orchestrator</span><span class="node-chip">Jurisdiction Advisor</span><span class="node-chip">Document Preparation Agent</span><span class="node-chip">License &amp; Registration Agent</span><span class="node-chip">Visa &amp; Immigration Agent</span><span class="node-chip">Banking &amp; Finance Agent</span><span class="node-chip">Compliance Agent</span><span class="node-chip">Process Engine</span><span class="node-chip">DET Portal API</span><span class="node-chip">GDRFA e-Services</span><span class="node-chip">MOHRE Portal</span><span class="node-chip">FTA Portal</span><span class="node-chip">Ejari System</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#10 Trust Before Verify</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Authentication and monitoring best practices observed</p>
+    <p class="detail">All tools use secure authentication methods (OAuth, Bearer Token). Monitoring tool present (Observability Service). Security tool present (Secrets Manager). Idempotent=true on safe-to-retry tools such as Trade Name Check API, Observability Service, Semantic Cache, Eval Framework, Process Engine, Secrets Manager.</p>
+    <div class="nodes"><span class="node-chip">Observability Service</span><span class="node-chip">Secrets Manager</span><span class="node-chip">Trade Name Check API</span><span class="node-chip">Semantic Cache</span><span class="node-chip">Eval Framework</span><span class="node-chip">Process Engine</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#11 Happy Path Engineering</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Happy Path Engineering mitigated through retry error handling and idempotent tool configuration</p>
+    <p class="detail">All tools specify errorHandling=Retry, providing built‑in retry mechanisms. Several tools are marked idempotent (Trade Name Check API, Observability Service, Semantic Cache, Eval Framework, Process Engine, Secrets Manager), supporting safe retries. This demonstrates proactive handling of failure scenarios rather than assuming only happy paths.</p>
+    <div class="nodes"><span class="node-chip">DET Portal API</span><span class="node-chip">GDRFA e-Services</span><span class="node-chip">MOHRE Portal</span><span class="node-chip">FTA Portal</span><span class="node-chip">Ejari System</span><span class="node-chip">Trade Name Check API</span><span class="node-chip">Observability Service</span><span class="node-chip">Semantic Cache</span><span class="node-chip">Eval Framework</span><span class="node-chip">Process Engine</span><span class="node-chip">Secrets Manager</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#12 Multi-Agent Chaos</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Pattern #12 &quot;Multi-Agent Chaos&quot; is avoided; agents have distinct roles and goals, a supervisor/orchestrator is present, and shared knowledge sources enable coordination.</p>
+    <p class="detail">The architecture includes a dedicated &quot;Business Setup Orchestrator&quot; (agentType=Orchestrator) that coordinates all worker agents. Each of the seven agents defines a unique agentRole and agentGoal, eliminating role overlap. Knowledge nodes such as &quot;UAE Business Regulations&quot;, &quot;Free Zone Comparison Guide&quot;, &quot;Document Checklist Library&quot;, and &quot;Fee Schedule &amp; Timelines&quot; are shared among multiple agents, providing common reference points for coordination. Human interaction is routed through the orchestrator, serving as an escalation point.</p>
+    <div class="nodes"><span class="node-chip">Business Setup Orchestrator</span><span class="node-chip">Jurisdiction Advisor</span><span class="node-chip">Document Preparation Agent</span><span class="node-chip">License &amp; Registration Agent</span><span class="node-chip">Visa &amp; Immigration Agent</span><span class="node-chip">Banking &amp; Finance Agent</span><span class="node-chip">Compliance Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#13 Responsiveness Afterthought</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Responsiveness considerations are present via timeouts, latency budgets, and caching.</p>
+    <p class="detail">All tools define explicit timeout values, agents specify latencyBudget (3s), and a caching tool (Semantic Cache) is included to reduce latency for repeated queries.</p>
+    <div class="nodes"><span class="node-chip">Business Setup Orchestrator</span><span class="node-chip">Jurisdiction Advisor</span><span class="node-chip">Document Preparation Agent</span><span class="node-chip">License &amp; Registration Agent</span><span class="node-chip">Visa &amp; Immigration Agent</span><span class="node-chip">Banking &amp; Finance Agent</span><span class="node-chip">Compliance Agent</span><span class="node-chip">Semantic Cache</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#14 Unbound Execution Cost</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Unbound Execution Cost mitigated by explicit max iterations, cost budgets, and monitoring tools.</p>
+    <p class="detail">All seven agents define maxIter (e.g., 20 for orchestrator, 10 for workers) and a costBudget of $0.50 per session. The architecture includes a Monitoring tool (Observability Service) that tracks token usage and latency, enabling cost tracking. Uniform model usage is acceptable as all agents share the same model but have defined budgets, reducing risk of uncontrolled spend.</p>
+    <div class="nodes"><span class="node-chip">Business Setup Orchestrator</span><span class="node-chip">Jurisdiction Advisor</span><span class="node-chip">Document Preparation Agent</span><span class="node-chip">License &amp; Registration Agent</span><span class="node-chip">Visa &amp; Immigration Agent</span><span class="node-chip">Banking &amp; Finance Agent</span><span class="node-chip">Compliance Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#15 Demo-Grade Agent in Production</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Demo-grade agents are avoided; production-ready practices are present.</p>
+    <p class="detail">All agents have structured observability, latency and cost budgets are defined, deployment target is Cloud, monitoring tool (Observability Service) and security tool (Secrets Manager) are included.</p>
+    <div class="nodes"><span class="node-chip">Business Setup Orchestrator</span><span class="node-chip">Jurisdiction Advisor</span><span class="node-chip">Document Preparation Agent</span><span class="node-chip">License &amp; Registration Agent</span><span class="node-chip">Visa &amp; Immigration Agent</span><span class="node-chip">Banking &amp; Finance Agent</span><span class="node-chip">Compliance Agent</span><span class="node-chip">Observability Service</span><span class="node-chip">Secrets Manager</span></div>
+</div>
+<h2>Knowledge &amp; Document Processing</h2>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#18 Using RAG for Whole-Document Operations</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">RAG/Hybrid retrieval is used for structured knowledge sources instead of dedicated query mechanisms.</p>
+    <p class="detail">All knowledge nodes (UAE Business Regulations, Free Zone Comparison Guide, Document Checklist Library, Fee Schedule &amp; Timelines) use a Hybrid (RAG + Keyword) retrieval strategy. They are queried for detailed regulatory content, fee line items, and comparison matrices, which are structured data that should be accessed via SQL or API strategies. No knowledge nodes use SQL or API retrieval for these operations, indicating RAG is being used for whole‑document or aggregation tasks—a clear anti‑pattern.</p>
+    <div class="nodes"><span class="node-chip">UAE Business Regulations</span><span class="node-chip">Free Zone Comparison Guide</span><span class="node-chip">Document Checklist Library</span><span class="node-chip">Fee Schedule &amp; Timelines</span></div>
+</div>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#19 One-Size-Fits-All Chunking</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">All knowledge nodes use the same semantic chunking strategy despite differing content types.</p>
+    <p class="detail">The architecture defines a uniform chunking=semantic, 512-token strategy for all four knowledge sources (UAE Business Regulations, Free Zone Comparison Guide, Document Checklist Library, Fee Schedule &amp; Timelines) even though they span legal, reference, and template content. This one-size-fits-all approach can lead to suboptimal retrieval performance for heterogeneous content.</p>
+    <div class="nodes"><span class="node-chip">UAE Business Regulations</span><span class="node-chip">Free Zone Comparison Guide</span><span class="node-chip">Document Checklist Library</span><span class="node-chip">Fee Schedule &amp; Timelines</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#17 Lazy Field Definitions</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">All knowledge nodes define data formats, content types, sensitivities and retrieval strategies, avoiding lazy field definitions.</p>
+    <p class="detail">Each Knowledge node ('UAE Business Regulations', 'Free Zone Comparison Guide', 'Document Checklist Library', 'Fee Schedule &amp; Timelines') includes explicit knowledgeDataFormats, knowledgeContentType, knowledgeSensitivity, and retrieval configuration, demonstrating proper field definitions.</p>
+    <div class="nodes"><span class="node-chip">UAE Business Regulations</span><span class="node-chip">Free Zone Comparison Guide</span><span class="node-chip">Document Checklist Library</span><span class="node-chip">Fee Schedule &amp; Timelines</span></div>
+</div>
+<h2>Design-Time</h2>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#21 Implicit Routing</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Implicit routing is absent; a single orchestrator handles all intent dispatch without a dedicated router.</p>
+    <p class="detail">The architecture has no agent with agentType=router or supervisor for dispatching intents. All workflow steps are directly invoked by the Business Setup Orchestrator, indicating implicit routing and potential scalability and maintainability issues.</p>
+    <div class="nodes"><span class="node-chip">Business Setup Orchestrator</span><span class="node-chip">Jurisdiction Advisor</span><span class="node-chip">Document Preparation Agent</span><span class="node-chip">License &amp; Registration Agent</span><span class="node-chip">Visa &amp; Immigration Agent</span><span class="node-chip">Banking &amp; Finance Agent</span><span class="node-chip">Compliance Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#20 No Guardrails</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Guardrail and security tools are incorporated, providing input validation and protection.</p>
+    <p class="detail">The architecture includes a guardrail tool (Trade Name Check API) at the trade name validation step and a security tool (Secrets Manager) for credential handling. These tools help enforce constraints and protect sensitive operations.</p>
+    <div class="nodes"><span class="node-chip">Trade Name Check API</span><span class="node-chip">Secrets Manager</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#22 No Evaluation Framework</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Evaluation framework present</p>
+    <p class="detail">The architecture includes an &quot;Eval Framework&quot; tool categorized as Testing, providing golden dataset evaluation, regression testing, and A/B comparison for agent quality, fulfilling the evaluation framework pattern.</p>
+    <div class="nodes"><span class="node-chip">Eval Framework</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#23 Prompt Fragility</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Prompt management is consistently templated across all agents, indicating robust handling of prompt fragility.</p>
+    <p class="detail">All seven agents specify promptMgmt=Templated, and no agents are listed with no or hardcoded prompt management. This consistent use of templated prompts reduces the risk of prompt brittleness and facilitates versioning and reuse.</p>
+    <div class="nodes"><span class="node-chip">Business Setup Orchestrator</span><span class="node-chip">Jurisdiction Advisor</span><span class="node-chip">Document Preparation Agent</span><span class="node-chip">License &amp; Registration Agent</span><span class="node-chip">Visa &amp; Immigration Agent</span><span class="node-chip">Banking &amp; Finance Agent</span><span class="node-chip">Compliance Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#24 Bolted-On Human-in-the-Loop</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Human-in-the-loop is integrated at design time with a dedicated Human node connected to the orchestrator and feedback collection tool.</p>
+    <p class="detail">The architecture includes a Human node with role and channel configured, connected to the Business Setup Orchestrator. A Feedback Collector tool (category=Feedback) is present for human corrections, and the human node has a real‑time SLA, satisfying positive signals for the pattern.</p>
+    <div class="nodes"><span class="node-chip">Human</span><span class="node-chip">Business Setup Orchestrator</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#25 Stateless Between Sessions</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Agents maintain persistent state across sessions</p>
+    <p class="detail">All agents are configured with memory=Both, indicating long‑term and session memory. Knowledge nodes are used for stateful guidance (e.g., regulations, fee schedules) and are updated regularly, supporting state persistence between user interactions.</p>
+    <div class="nodes"><span class="node-chip">Business Setup Orchestrator</span><span class="node-chip">Jurisdiction Advisor</span><span class="node-chip">Document Preparation Agent</span><span class="node-chip">License &amp; Registration Agent</span><span class="node-chip">Visa &amp; Immigration Agent</span><span class="node-chip">Banking &amp; Finance Agent</span><span class="node-chip">Compliance Agent</span><span class="node-chip">UAE Business Regulations</span><span class="node-chip">Free Zone Comparison Guide</span><span class="node-chip">Document Checklist Library</span><span class="node-chip">Fee Schedule &amp; Timelines</span></div>
+</div>
+<h2>Operational</h2>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#29 RAG as a Black Box</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">RAG used without query preprocessing or reranking tools, treating knowledge retrieval as a black box.</p>
+    <p class="detail">All knowledge sources use a hybrid RAG retrieval strategy but there are no connected tools categorized as processing (for query rewriting) or extraction (for reranking). Chunking strategies are defined, yet the architecture lacks explicit components to manage or improve RAG results, indicating a black‑box usage.</p>
+    <div class="nodes"><span class="node-chip">UAE Business Regulations</span><span class="node-chip">Free Zone Comparison Guide</span><span class="node-chip">Document Checklist Library</span><span class="node-chip">Fee Schedule &amp; Timelines</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#26 Flying Blind</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Monitoring tool present providing structured logging and tracing</p>
+    <p class="detail">The architecture includes an &quot;Observability Service&quot; (category=Monitoring) connected to the Business Setup Orchestrator, satisfying the requirement for monitoring tools and ensuring observability across agents.</p>
+    <div class="nodes"><span class="node-chip">Observability Service</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#27 No Caching Strategy</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Caching strategy present</p>
+    <p class="detail">The architecture includes a caching tool (Semantic Cache) marked as idempotent and connected to the Business Setup Orchestrator, providing semantic result caching for LLM responses.</p>
+    <div class="nodes"><span class="node-chip">Semantic Cache</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#28 Context Window Mismanagement</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">All agents use a defined context strategy (Prioritised) and rely on hybrid RAG retrieval for large knowledge sources, indicating proper context window management.</p>
+    <p class="detail">Each worker agent (Jurisdiction Advisor, Document Preparation Agent, License &amp; Registration Agent, Visa &amp; Immigration Agent, Banking &amp; Finance Agent, Compliance Agent) and the orchestrator specify contextStrategy=Prioritised. Knowledge nodes employ hybrid retrieval with semantic chunking (512 tokens), providing selective context. No agents are marked with contextStrategy=none, and no large knowledge sources feed directly without filtering.</p>
+    <div class="nodes"><span class="node-chip">Business Setup Orchestrator</span><span class="node-chip">Jurisdiction Advisor</span><span class="node-chip">Document Preparation Agent</span><span class="node-chip">License &amp; Registration Agent</span><span class="node-chip">Visa &amp; Immigration Agent</span><span class="node-chip">Banking &amp; Finance Agent</span><span class="node-chip">Compliance Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#30 No Feedback Loop</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Feedback loop mechanisms are present, including a feedback collection tool, monitoring service, and testing framework.</p>
+    <p class="detail">The architecture includes a Feedback Collector (category=Feedback) for capturing user ratings and corrections, an Observability Service (category=Monitoring) for drift detection and performance monitoring, and an Eval Framework (category=Testing) for A/B testing and evaluation, establishing a continuous improvement feedback loop.</p>
+    <div class="nodes"><span class="node-chip">Feedback Collector</span><span class="node-chip">Observability Service</span><span class="node-chip">Eval Framework</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#31 Security as an Afterthought</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Security integrated throughout with authenticated tools, security and monitoring categories present, and knowledge sensitivity defined.</p>
+    <p class="detail">All API tools use OAuth or Bearer Token authentication; a dedicated security tool (Secrets Manager) is present; monitoring tool (Observability Service) provides audit logging; knowledge nodes have sensitivity set; overall security considerations are embedded in the design.</p>
+    <div class="nodes"><span class="node-chip">DET Portal API</span><span class="node-chip">GDRFA e-Services</span><span class="node-chip">MOHRE Portal</span><span class="node-chip">FTA Portal</span><span class="node-chip">Ejari System</span><span class="node-chip">Trade Name Check API</span><span class="node-chip">Observability Service</span><span class="node-chip">Secrets Manager</span></div>
+</div>
+<div class="footer">
+    <p>Analyzed on-device &mdash; 40 findings across 5 categories</p>
+</div>
+</div>
+</body>
+</html>

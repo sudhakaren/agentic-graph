@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sizing Estimate — Product Review &amp; Purchase System</title>
+<style>
+    :root { --bg: #ffffff; --fg: #1d1d1f; --muted: #6e6e73; --border: #d2d2d7; --accent: #0066cc; --section-bg: #f5f5f7; }
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) { --bg: #1d1d1f; --fg: #f5f5f7; --muted: #98989d; --border: #424245; --accent: #2997ff; --section-bg: #2c2c2e; }
+    }
+    [data-theme="dark"] { --bg: #1d1d1f; --fg: #f5f5f7; --muted: #98989d; --border: #424245; --accent: #2997ff; --section-bg: #2c2c2e; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; padding: 40px 20px; }
+    .container { max-width: 900px; margin: 0 auto; }
+    h1 { font-size: 2em; margin-bottom: 0.3em; }
+    h2 { font-size: 1.4em; margin-top: 2em; margin-bottom: 0.6em; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.3em; }
+    h3 { font-size: 1.1em; margin-top: 1em; margin-bottom: 0.4em; }
+    .overview { font-size: 1.1em; color: var(--muted); margin-bottom: 1.5em; }
+    .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 2em; }
+    .summary-card { background: var(--section-bg); border-radius: 8px; padding: 16px; text-align: center; }
+    .summary-card .value { font-size: 2em; font-weight: 700; }
+    .summary-card .label { font-size: 0.85em; color: var(--muted); }
+    .card { background: var(--section-bg); border-radius: 8px; padding: 16px 20px; margin-bottom: 12px; }
+    .tier-badge { display: inline-block; padding: 4px 12px; border-radius: 4px; font-weight: 700; font-size: 0.85em; color: white; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+    th { font-weight: 600; color: var(--muted); font-size: 0.9em; }
+    .risk-item { display: flex; align-items: flex-start; gap: 8px; margin: 4px 0; }
+    .progress-bar { background: var(--border); border-radius: 3px; height: 8px; overflow: hidden; margin-top: 4px; }
+    .progress-fill { height: 100%; border-radius: 3px; }
+    .rec-card { background: var(--section-bg); border-radius: 8px; padding: 16px 20px; margin-bottom: 12px; border-left: 4px solid var(--accent); }
+    .rec-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .concern-chip { font-size: 0.75em; padding: 2px 8px; border-radius: 4px; background: var(--border); color: var(--muted); }
+    .disclaimer { font-size: 0.85em; color: var(--muted); margin-top: 3em; padding-top: 1em; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Sizing Estimate — Product Review &amp; Purchase System</h1>
+<p class="overview">Generated 31 March 2026 at 14:24</p>
+<div class="card" style="border-left: 4px solid var(--accent); margin-bottom: 1.5em">
+    <p style="color: var(--muted); font-size: 0.9em"><strong>Disclaimer:</strong> Estimates are based on graph structure and sizing rules of thumb. Actual requirements may vary based on workload characteristics, model choices, and deployment environment.</p>
+</div><div class="summary-grid">
+    <div class="summary-card">
+        <div class="value" style="color: #ff3b30">Hard</div>
+        <div class="label">Tier</div>
+    </div>
+    <div class="summary-card">
+        <div class="value">18</div>
+        <div class="label">vCPU</div>
+    </div>
+    <div class="summary-card">
+        <div class="value">90</div>
+        <div class="label">GB RAM</div>
+    </div>
+    <div class="summary-card">
+        <div class="value">22</div>
+        <div class="label">Pods</div>
+    </div>
+</div><h2>Infrastructure Estimate</h2><div class="card"><p>4 agent(s) × 11 tool(s) → Hard tier</p><table><tr><th>Resource</th><th>Per 100 Users</th></tr><tr><td>vCPU</td><td>18</td></tr><tr><td>RAM</td><td>90 GB</td></tr><tr><td>Executor Pods</td><td>22</td></tr></table></div><h2>Workload Profile</h2><table><tr><th>Dimension</th><th>Value</th><th>Notes</th></tr><tr><td>Interaction</td><td>Conversational (P95 &lt; 5s)</td><td>1 human node(s) with chat/portal channels</td></tr><tr><td>Concurrency</td><td>50 peak inferences</td><td>1 delegation layer(s) → 5 inferences per session</td></tr><tr><td>Token Profile</td><td>In: 2K–8K, Out: 50–200</td><td>Mostly deterministic/conditional agents; 1 agent(s) with &gt;5 iterations multiply token cost</td></tr><tr><td>External Calls</td><td>10 tools (1 async)</td><td>Low risk</td></tr><tr><td>Consistency</td><td>Global/always-on (cloud deployment)</td><td>—</td></tr></table><h2>Architecture Decomposition</h2><div class="card"><h3>Front Door <span style="float: right">&#x26A0;&#xFE0F;</span></h3><div class="risk-item">&#x2705; Caching tools</div><div class="risk-item">&#x2705; Security tools</div><div class="risk-item">&#x26A0;&#xFE0F; <span style="color: var(--muted)">No routing tools</span></div></div><div class="card"><h3>Agent Runtime <span style="float: right">&#x2705;</span></h3><div class="risk-item">&#x2705; Agent runtime (4 agents)</div><div class="risk-item">&#x2705; Guardrail tools</div><div class="risk-item">&#x2705; Monitoring tools</div><div class="risk-item">&#x2705; Workflow tools</div><div class="risk-item">&#x2705; Feedback tools</div></div><div class="card"><h3>Inference <span style="float: right">&#x2705;</span></h3><div class="risk-item">&#x2705; Deployment: Cloud</div><div class="risk-item">&#x2705; 4 agent(s) with model specified</div><div class="risk-item">&#x2705; 1 testing tool(s)</div></div><h2>Scaling Recommendations</h2><div class="rec-card"><div class="rec-header">&#x2705; <strong>Add fallback paths</strong> <span class="concern-chip">Quality</span></div><p style="color: var(--muted)">No tools with fallback error handling. Under load, saturated backends need graceful degradation — serve stale cache or switch to a simpler model.</p></div><h2>Caching Assessment</h2><div class="card"><p>&#x2705; Caching tools: Semantic Cache</p><div style="margin: 12px 0"><p style="font-size: 0.9em; color: var(--muted)">Cost savings: 90%</p><div class="progress-bar"><div class="progress-fill" style="width: 90%; background: #34c759"></div></div><p style="font-size: 0.9em; color: var(--muted); margin-top: 8px">Latency reduction: 85%</p><div class="progress-bar"><div class="progress-fill" style="width: 85%; background: #007aff"></div></div></div><p style="color: var(--muted); margin-top: 4px">• Consider caching results for 6 additional idempotent tool(s):</p></div><h2>Sizing Parameters</h2><table><tr><th>Parameter</th><th>Value</th></tr><tr><td>Base User Count</td><td>100</td></tr><tr><td>Simple Tier</td><td>&le;1 agents, &le;1 tools &rarr; 1 vCPU, 5 GB RAM</td></tr><tr><td>Medium Tier</td><td>&le;5 agents, &le;10 tools &rarr; 4 vCPU, 20 GB RAM</td></tr><tr><td>Hard Tier</td><td>&gt;5 agents or &gt;10 tools &rarr; 18 vCPU, 90 GB RAM</td></tr><tr><td>Concurrency Multiplier</td><td>Low: 5, High: 15</td></tr><tr><td>Caching Cost Savings</td><td>60&ndash;90%</td></tr><tr><td>Caching Latency Reduction</td><td>50&ndash;85%</td></tr><tr><td>Front Door Categories</td><td>caching, routing, security</td></tr><tr><td>Agent Runtime Categories</td><td>guardrail, monitoring, workflow, feedback</td></tr><tr><td>Inference Categories</td><td>testing</td></tr></table></div></body></html>

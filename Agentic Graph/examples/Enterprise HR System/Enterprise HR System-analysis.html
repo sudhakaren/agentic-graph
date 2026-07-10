@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analysis — Enterprise HR System</title>
+<style>
+    :root { --bg: #ffffff; --fg: #1d1d1f; --muted: #6e6e73; --border: #d2d2d7; --accent: #0066cc; --section-bg: #f5f5f7; }
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) { --bg: #1d1d1f; --fg: #f5f5f7; --muted: #98989d; --border: #424245; --accent: #2997ff; --section-bg: #2c2c2e; }
+    }
+    [data-theme="dark"] { --bg: #1d1d1f; --fg: #f5f5f7; --muted: #98989d; --border: #424245; --accent: #2997ff; --section-bg: #2c2c2e; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; padding: 40px 20px; }
+    .container { max-width: 900px; margin: 0 auto; }
+    h1 { font-size: 2em; margin-bottom: 0.3em; }
+    h2 { font-size: 1.4em; margin-top: 2em; margin-bottom: 0.6em; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.3em; }
+    .overview { font-size: 1.1em; color: var(--muted); margin-bottom: 1.5em; }
+    .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 2em; }
+    .summary-card { background: var(--section-bg); border-radius: 8px; padding: 16px; text-align: center; }
+    .summary-card .count { font-size: 2em; font-weight: 700; }
+    .summary-card .label { font-size: 0.85em; color: var(--muted); }
+    .summary-card.warning .count { color: #ff3b30; }
+    .summary-card.recommendation .count { color: #ff9500; }
+    .summary-card.positive .count { color: #34c759; }
+    .summary-card.info .count { color: #007aff; }
+    .finding { background: var(--section-bg); border-radius: 8px; padding: 16px 20px; margin-bottom: 12px; }
+    .finding.warning { border-left: 4px solid #ff3b30; }
+    .finding.recommendation { border-left: 4px solid #ff9500; }
+    .finding.positive { border-left: 4px solid #34c759; }
+    .finding.info { border-left: 4px solid #007aff; }
+    .finding-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .finding-header .icon { font-size: 1.2em; }
+    .finding-header .title { font-weight: 600; }
+    .finding-header .severity { font-size: 0.75em; text-transform: uppercase; letter-spacing: 0.05em; padding: 2px 7px; border-radius: 4px; font-weight: 600; }
+    .severity-warning { background: #ff3b3015; color: #ff3b30; }
+    .severity-recommendation { background: #ff950015; color: #ff9500; }
+    .severity-positive { background: #34c75915; color: #34c759; }
+    .severity-info { background: #007aff15; color: #007aff; }
+    .finding .summary { margin-bottom: 4px; }
+    .finding .detail { color: var(--muted); font-size: 0.9em; }
+    .finding .nodes { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 4px; }
+    .finding .node-chip { display: inline-block; font-size: 0.8em; padding: 2px 8px; border-radius: 12px; background: var(--bg); border: 1px solid var(--border); }
+    .footer { margin-top: 3em; padding-top: 1em; border-top: 1px solid var(--border); font-size: 0.85em; color: var(--muted); }
+    .theme-toggle { position: fixed; top: 16px; right: 16px; background: var(--section-bg); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; cursor: pointer; font-size: 18px; line-height: 1; color: var(--fg); z-index: 100; }
+    .theme-toggle:hover { background: var(--border); }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="let d=document.documentElement;let t=d.getAttribute('data-theme');d.setAttribute('data-theme',t==='dark'?'light':'dark');this.textContent=t==='dark'?'\u263E':'\u2600\uFE0F'" aria-label="Toggle theme">&#x263E;</button>
+<div class="container">
+<h1>Architecture Analysis</h1>
+<p class="overview">Enterprise HR System &mdash; 31 March 2026 at 13:14</p>
+
+<div style="background: var(--section-bg); border-left: 3px solid #ff9500; border-radius: 6px; padding: 10px 14px; margin-bottom: 1.5em; font-size: 0.85em; color: var(--muted);">
+    <strong style="color: var(--fg);">AI Disclaimer:</strong> This analysis was generated with AI. Results may be inaccurate and should be reviewed by a qualified professional before making decisions.
+</div>
+
+<div class="summary-grid">
+    <div class="summary-card warning"><div class="count">19</div><div class="label">Warnings</div></div>
+    <div class="summary-card recommendation"><div class="count">1</div><div class="label">Recommendations</div></div>
+    <div class="summary-card positive"><div class="count">27</div><div class="label">Positive</div></div>
+    <div class="summary-card info"><div class="count">0</div><div class="label">Info</div></div>
+</div>
+<h2>Foundational</h2>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#2 Agent-as-Business-Process Fallacy</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Compliance‑sensitive processes are handled solely by agents without workflow or delivery tools.</p>
+    <p class="detail">The Compliance Agent (and also Recruitment Agent) perform regulated tasks (e.g., legal compliance, payroll) without any connected toolCategory=workflow or toolType=flow tools, despite the system’s GDPR, SOC 2, EEOC, ADA, FMLA, FLSA, HIPAA requirements. This indicates the Agent‑as‑Business‑Process fallacy.</p>
+    <div class="nodes"><span class="node-chip">Compliance Agent</span><span class="node-chip">Recruitment Agent</span></div>
+</div>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#4 All-or-Nothing Autonomy</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">High‑risk agents operate without human‑in‑the‑loop or guardrail tools and overall risk level is undefined.</p>
+    <p class="detail">Payroll Agent, Employee Relations Agent, and Compliance Agent are marked high risk but have no connected human nodes, no guardrail toolCategory at their decision points, and the project lacks an overallRiskLevel configuration. KnowledgeRisk metadata is missing on nodes, indicating insufficient risk controls.</p>
+    <div class="nodes"><span class="node-chip">Payroll Agent</span><span class="node-chip">Employee Relations Agent</span><span class="node-chip">Compliance Agent</span></div>
+</div>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#5 Passing As-Is Content Through the Model</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Agents process sensitive HR data without delivery or processing tools and lack human verification steps.</p>
+    <p class="detail">Payroll Agent, Employee Relations Agent, and Compliance Agent handle high‑risk content (payroll, employee relations issues, compliance data) but are only connected to workflow or general tools. No toolCategory=delivery or processing tools are used for content pass‑through, and there is no human node with a configured humanChannel for review, creating a clear anti‑pattern of unverified content handling.</p>
+    <div class="nodes"><span class="node-chip">Payroll Agent</span><span class="node-chip">Employee Relations Agent</span><span class="node-chip">Compliance Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#1 Monolithic Mega-Prompt</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Architecture uses multiple specialized agents with distinct roles and goals, and includes an orchestrator (HR Orchestrator) acting as a supervisor; delegation is enabled where appropriate.</p>
+    <p class="detail">Each worker agent has a focused role (e.g., Recruitment, Onboarding, Payroll) and goal, the HR Orchestrator routes tasks, and delegation is enabled on orchestrator and recruitment agents, avoiding a single massive prompt.</p>
+    <div class="nodes"><span class="node-chip">HR Orchestrator</span><span class="node-chip">Recruitment Agent</span><span class="node-chip">Onboarding Agent</span><span class="node-chip">Payroll Agent</span><span class="node-chip">Leave Management Agent</span><span class="node-chip">Performance Review Agent</span><span class="node-chip">Employee Relations Agent</span><span class="node-chip">Compliance Agent</span><span class="node-chip">Screening Agent</span><span class="node-chip">Interview Scheduler</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#2 Agent-as-Business-Process Fallacy</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Controlled steps are executed via appropriate workflow and delivery tools.</p>
+    <p class="detail">Payroll processing uses the Payroll Processor (toolCategory=Workflow) and email notifications use the Email &amp; Notifications (toolCategory=Delivery). The HR Orchestrator coordinates agents and integrates observability, caching, and security tools, showing a balanced use of agents and workflow tools for deterministic steps.</p>
+    <div class="nodes"><span class="node-chip">Payroll Agent</span><span class="node-chip">Payroll Processor</span><span class="node-chip">Email &amp; Notifications</span><span class="node-chip">HR Orchestrator</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#3 Invisible State</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">The architecture demonstrates strong state persistence through long‑term or both memory settings and explicit knowledge node connections for critical agents.</p>
+    <p class="detail">Multiple agents (Onboarding Agent, Payroll Agent, Employee Relations Agent, Compliance Agent, Screening Agent) are configured with long‑term or both memory and are directly linked to knowledge stores (Training Materials, Benefits Catalog, Company Policies, Labor Law Database, Job Descriptions DB) enabling reliable state storage and retrieval.</p>
+    <div class="nodes"><span class="node-chip">Onboarding Agent</span><span class="node-chip">Payroll Agent</span><span class="node-chip">Employee Relations Agent</span><span class="node-chip">Compliance Agent</span><span class="node-chip">Screening Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#6 Chasing Exotic Agent Patterns</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Agent types align with task complexity and delegation is limited to necessary coordinator agents.</p>
+    <p class="detail">The architecture uses a single orchestrator for coordination and worker agents for domain-specific tasks, with delegation enabled only on the orchestrator and recruitment agent where appropriate. Agent count (10) matches the breadth of HR functions, and specialist workers are used only where domain expertise is required.</p>
+    <div class="nodes"><span class="node-chip">HR Orchestrator</span><span class="node-chip">Recruitment Agent</span><span class="node-chip">Onboarding Agent</span><span class="node-chip">Payroll Agent</span><span class="node-chip">Leave Management Agent</span><span class="node-chip">Performance Review Agent</span><span class="node-chip">Employee Relations Agent</span><span class="node-chip">Compliance Agent</span><span class="node-chip">Screening Agent</span><span class="node-chip">Interview Scheduler</span></div>
+</div>
+<h2>Scale &amp; Reliability</h2>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#7 Tool Soup</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Agent has overlapping toolCategory values, creating a tool soup within the same agent.</p>
+    <p class="detail">The Onboarding Agent connects to both Document Generator (category=General) and HRIS API (category=General), resulting in duplicate toolCategory usage for a single agent, which is an anti‑pattern signal.</p>
+    <div class="nodes"><span class="node-chip">Onboarding Agent</span></div>
+</div>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#8 Tool Data Overload</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Missing processing or extraction tools before agents can cause tool data overload.</p>
+    <p class="detail">The architecture connects agents directly to general-purpose tools without any toolCategory=processing or toolCategory=extraction steps, so agents receive raw data without filtering or transformation, a classic sign of Tool Data Overload.</p>
+    <div class="nodes"><span class="node-chip">ATS API</span><span class="node-chip">Background Check API</span><span class="node-chip">Calendar API</span><span class="node-chip">Document Generator</span><span class="node-chip">Email &amp; Notifications</span><span class="node-chip">Payroll Processor</span><span class="node-chip">HRIS API</span><span class="node-chip">Survey Tool</span></div>
+</div>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#10 Trust Before Verify</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">State-changing tools lack idempotency guarantees, exposing the system to duplicate actions.</p>
+    <p class="detail">Several workflow and data-modifying tools (ATS API, Calendar API, Document Generator, Email &amp; Notifications, Payroll Processor, HRIS API, Survey Tool) are marked idempotent=no, which can cause unintended side‑effects if retries occur. This reflects a &quot;trust before verify&quot; anti‑pattern.</p>
+    <div class="nodes"><span class="node-chip">ATS API</span><span class="node-chip">Calendar API</span><span class="node-chip">Document Generator</span><span class="node-chip">Email &amp; Notifications</span><span class="node-chip">Payroll Processor</span><span class="node-chip">HRIS API</span><span class="node-chip">Survey Tool</span></div>
+</div>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#12 Multi-Agent Chaos</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Agents operate without shared knowledge sources for coordination, leading to potential chaos.</p>
+    <p class="detail">While each agent has defined roles and goals, coordination relies solely on the Orchestrator and tool routing; there is no common knowledge base linking agents, which matches the anti‑pattern signal of “no shared knowledge sources for coordination.”</p>
+    <div class="nodes"><span class="node-chip">HR Orchestrator</span><span class="node-chip">Recruitment Agent</span><span class="node-chip">Onboarding Agent</span><span class="node-chip">Payroll Agent</span><span class="node-chip">Leave Management Agent</span><span class="node-chip">Performance Review Agent</span><span class="node-chip">Employee Relations Agent</span><span class="node-chip">Compliance Agent</span><span class="node-chip">Screening Agent</span><span class="node-chip">Interview Scheduler</span></div>
+</div>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#13 Responsiveness Afterthought</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Long-running tools are configured as synchronous (toolAsync=false) without asynchronous handling, risking latency spikes.</p>
+    <p class="detail">Tools such as Payroll Processor and Background Check API have async set to false despite potentially long execution times, which can degrade responsiveness.</p>
+    <div class="nodes"><span class="node-chip">Payroll Processor</span><span class="node-chip">Background Check API</span></div>
+</div>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#14 Unbound Execution Cost</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">All agents use the same large model without right‑sizing, leading to unbounded execution cost.</p>
+    <p class="detail">Every agent (HR Orchestrator, Recruitment Agent, Onboarding Agent, Payroll Agent, Leave Management Agent, Performance Review Agent, Employee Relations Agent, Compliance Agent, Screening Agent, Interview Scheduler) is configured with model=gpt-oss-120b regardless of task complexity, which can cause unnecessary cost per session.</p>
+    <div class="nodes"><span class="node-chip">HR Orchestrator</span><span class="node-chip">Recruitment Agent</span><span class="node-chip">Onboarding Agent</span><span class="node-chip">Payroll Agent</span><span class="node-chip">Leave Management Agent</span><span class="node-chip">Performance Review Agent</span><span class="node-chip">Employee Relations Agent</span><span class="node-chip">Compliance Agent</span><span class="node-chip">Screening Agent</span><span class="node-chip">Interview Scheduler</span></div>
+</div>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#15 Demo-Grade Agent in Production</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Deployment target not configured for the project, indicating a demo‑grade setup.</p>
+    <p class="detail">The architecture lacks a specified deploymentTarget (cloud, onPrem, or hybrid) at the project level, which is a key anti‑pattern indicator for demo‑grade agents in production.</p>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#7 Tool Soup</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Most agents use a moderate number of distinct tools and receive role‑specific tool subsets.</p>
+    <p class="detail">Agents typically connect to 2‑4 tools (within the 3‑7 recommended range) and tool sets differ per agent role (e.g., Recruitment Agent uses no tools directly, Interview Scheduler uses Calendar API and Email, Payroll Agent uses Payroll Processor and HRIS API). Distinct categories are maintained for many agents, and tool subsets align with agent responsibilities.</p>
+    <div class="nodes"><span class="node-chip">HR Orchestrator</span><span class="node-chip">Recruitment Agent</span><span class="node-chip">Screening Agent</span><span class="node-chip">Interview Scheduler</span><span class="node-chip">Payroll Agent</span><span class="node-chip">Leave Management Agent</span><span class="node-chip">Performance Review Agent</span><span class="node-chip">Employee Relations Agent</span><span class="node-chip">Compliance Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#8 Tool Data Overload</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">All tools specify their inputs, outputs, and data volume.</p>
+    <p class="detail">Every tool includes defined input and output schemas and a dataVolume attribute, demonstrating good documentation and sizing.</p>
+    <div class="nodes"><span class="node-chip">ATS API</span><span class="node-chip">Background Check API</span><span class="node-chip">Calendar API</span><span class="node-chip">Document Generator</span><span class="node-chip">Email &amp; Notifications</span><span class="node-chip">Payroll Processor</span><span class="node-chip">HRIS API</span><span class="node-chip">Survey Tool</span><span class="node-chip">Observability Service</span><span class="node-chip">Semantic Cache</span><span class="node-chip">Eval Framework</span><span class="node-chip">Secrets Manager</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#9 Agent Washing</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">The architecture predominantly uses reasoning agents for dynamic decisions and relies on tools (APIs, flows) for simple deterministic operations, avoiding agent washing.</p>
+    <p class="detail">Agents such as HR Orchestrator, Onboarding Agent, Payroll Agent, and others have complexity=Reasoning, handling complex workflows. Simple tasks like scheduling, document generation, and data retrieval are performed by dedicated tool nodes (Calendar API, Document Generator, HRIS API). No deterministic agents are present.</p>
+    <div class="nodes"><span class="node-chip">HR Orchestrator</span><span class="node-chip">Onboarding Agent</span><span class="node-chip">Payroll Agent</span><span class="node-chip">Leave Management Agent</span><span class="node-chip">Performance Review Agent</span><span class="node-chip">Employee Relations Agent</span><span class="node-chip">Compliance Agent</span><span class="node-chip">Interview Scheduler</span><span class="node-chip">Screening Agent</span><span class="node-chip">Recruitment Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#10 Trust Before Verify</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">All tools use explicit authentication and monitoring/security tooling is present.</p>
+    <p class="detail">Every tool specifies an authentication method (Bearer Token, API Key, or OAuth). A monitoring tool (Observability Service) and a security tool (Secrets Manager) are included, demonstrating good verification practices.</p>
+    <div class="nodes"><span class="node-chip">ATS API</span><span class="node-chip">Background Check API</span><span class="node-chip">Calendar API</span><span class="node-chip">Document Generator</span><span class="node-chip">Email &amp; Notifications</span><span class="node-chip">Payroll Processor</span><span class="node-chip">HRIS API</span><span class="node-chip">Survey Tool</span><span class="node-chip">Observability Service</span><span class="node-chip">Secrets Manager</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#11 Happy Path Engineering</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">The architecture employs robust error handling and idempotency for critical tools, providing alternative handling paths.</p>
+    <p class="detail">Tools such as ATS API, Background Check API, Calendar API, Document Generator, Email &amp; Notifications, Payroll Processor, HRIS API, Survey Tool, and Observability Service are configured with errorHandling=Retry or Fallback. Idempotent=true is set on retryable tools where appropriate (Background Check API, Observability Service, Semantic Cache, Eval Framework, Secrets Manager). This demonstrates happy‑path engineering with fallback and retry strategies.</p>
+    <div class="nodes"><span class="node-chip">ATS API</span><span class="node-chip">Background Check API</span><span class="node-chip">Calendar API</span><span class="node-chip">Document Generator</span><span class="node-chip">Email &amp; Notifications</span><span class="node-chip">Payroll Processor</span><span class="node-chip">HRIS API</span><span class="node-chip">Survey Tool</span><span class="node-chip">Observability Service</span><span class="node-chip">Semantic Cache</span><span class="node-chip">Eval Framework</span><span class="node-chip">Secrets Manager</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#12 Multi-Agent Chaos</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Clear role/goal definitions and presence of an orchestrator provide structure.</p>
+    <p class="detail">All agents have distinct roles and goals, and the HR Orchestrator agent (type=Orchestrator) serves as a central coordinator, satisfying key positive signals.</p>
+    <div class="nodes"><span class="node-chip">HR Orchestrator</span><span class="node-chip">Recruitment Agent</span><span class="node-chip">Onboarding Agent</span><span class="node-chip">Payroll Agent</span><span class="node-chip">Leave Management Agent</span><span class="node-chip">Performance Review Agent</span><span class="node-chip">Employee Relations Agent</span><span class="node-chip">Compliance Agent</span><span class="node-chip">Screening Agent</span><span class="node-chip">Interview Scheduler</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#13 Responsiveness Afterthought</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Responsiveness considerations are largely addressed through configured timeouts, latency budgets, and caching.</p>
+    <p class="detail">All tools define explicit timeouts, agents specify latencyBudget=3s, and a caching tool (Semantic Cache) is included to reduce latency for repeated queries.</p>
+    <div class="nodes"><span class="node-chip">Semantic Cache</span><span class="node-chip">HR Orchestrator</span><span class="node-chip">Recruitment Agent</span><span class="node-chip">Onboarding Agent</span><span class="node-chip">Payroll Agent</span><span class="node-chip">Leave Management Agent</span><span class="node-chip">Performance Review Agent</span><span class="node-chip">Employee Relations Agent</span><span class="node-chip">Compliance Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#14 Unbound Execution Cost</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Agents have explicit max iteration limits and per‑session cost budgets, and a monitoring tool tracks cost metrics.</p>
+    <p class="detail">Each agent defines maxIter (e.g., 20, 15, 12, etc.) and costBudget=$0.50/session, and the Observability Service (monitoring category) is connected to the orchestrator to collect cost and usage data.</p>
+    <div class="nodes"><span class="node-chip">HR Orchestrator</span><span class="node-chip">Recruitment Agent</span><span class="node-chip">Onboarding Agent</span><span class="node-chip">Payroll Agent</span><span class="node-chip">Leave Management Agent</span><span class="node-chip">Performance Review Agent</span><span class="node-chip">Employee Relations Agent</span><span class="node-chip">Compliance Agent</span><span class="node-chip">Screening Agent</span><span class="node-chip">Interview Scheduler</span><span class="node-chip">Observability Service</span></div>
+</div>
+<h2>Knowledge &amp; Document Processing</h2>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#18 Using RAG for Whole-Document Operations</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">RAG is used for whole-document operations on structured knowledge bases</p>
+    <p class="detail">All knowledge sources (Job Descriptions DB, Training Materials, Benefits Catalog, Company Policies, Labor Law Database) are configured with retrieval=Hybrid (RAG + Keyword) despite containing highly structured data that would be better served by SQL or API retrieval for counting, aggregation, or rule-based queries. No knowledge nodes use sql or api strategies, indicating over‑reliance on RAG for operations that require precise structural handling.</p>
+    <div class="nodes"><span class="node-chip">Job Descriptions DB</span><span class="node-chip">Training Materials</span><span class="node-chip">Benefits Catalog</span><span class="node-chip">Company Policies</span><span class="node-chip">Labor Law Database</span></div>
+</div>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#19 One-Size-Fits-All Chunking</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Uniform semantic chunking applied to all knowledge sources regardless of content type</p>
+    <p class="detail">All five knowledge nodes use the same chunking strategy (semantic, 512 tokens) despite differing content types (Reference, Product Catalog, Legal/Regulatory). This one-size-fits-all approach can reduce retrieval relevance and efficiency for distinct data types.</p>
+    <div class="nodes"><span class="node-chip">Job Descriptions DB</span><span class="node-chip">Training Materials</span><span class="node-chip">Benefits Catalog</span><span class="node-chip">Company Policies</span><span class="node-chip">Labor Law Database</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#17 Lazy Field Definitions</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">All knowledge nodes fully specify data formats, content type, location/access methods, and sensitivity.</p>
+    <p class="detail">Each knowledge source (Job Descriptions DB, Training Materials, Benefits Catalog, Company Policies, Labor Law Database) includes explicit knowledgeDataFormats, knowledgeContentType, and appropriate sensitivity settings, demonstrating proper field definition and avoiding lazy definitions.</p>
+    <div class="nodes"><span class="node-chip">Job Descriptions DB</span><span class="node-chip">Training Materials</span><span class="node-chip">Benefits Catalog</span><span class="node-chip">Company Policies</span><span class="node-chip">Labor Law Database</span></div>
+</div>
+<h2>Design-Time</h2>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#20 No Guardrails</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Key high‑risk agents lack guardrail or human review mechanisms.</p>
+    <p class="detail">While a Guardrail tool (Background Check API) exists, no guardrail tools are placed at most input/output boundaries and high‑risk agents (Payroll Agent, Employee Relations Agent, Compliance Agent) have no upstream guardrail validation or downstream human review nodes.</p>
+    <div class="nodes"><span class="node-chip">Recruitment Agent</span><span class="node-chip">Compliance Agent</span><span class="node-chip">Payroll Agent</span><span class="node-chip">Employee Relations Agent</span><span class="node-chip">Background Check API</span></div>
+</div>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#21 Implicit Routing</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Implicit routing detected: no dedicated router agent; HR Orchestrator handles dispatch directly.</p>
+    <p class="detail">The architecture routes user requests through the HR Orchestrator without a specialized router or supervisor agent. This implicit routing can lead to tightly coupled orchestration logic and reduced flexibility for intent classification or fallback handling.</p>
+    <div class="nodes"><span class="node-chip">HR Orchestrator</span></div>
+</div>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#24 Bolted-On Human-in-the-Loop</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Human-in-the-loop is bolted on only at the orchestrator level, with no dedicated human nodes or feedback tools for high‑risk agents.</p>
+    <p class="detail">The architecture includes a single human node (End User) connected solely to the HR Orchestrator, lacking humanRole/humanChannel configuration and not linked to high‑risk agents (Payroll, Employee Relations, Compliance). No toolCategory=feedback mechanisms are used for human‑to‑agent corrections on those agents.</p>
+    <div class="nodes"><span class="node-chip">End User</span><span class="node-chip">Payroll Agent</span><span class="node-chip">Employee Relations Agent</span><span class="node-chip">Compliance Agent</span><span class="node-chip">HR Orchestrator</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#20 No Guardrails</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Guardrail and security tools are present in parts of the flow.</p>
+    <p class="detail">The Background Check API is classified as a guardrail tool and the Secrets Manager provides security for credential handling, satisfying some guardrail requirements.</p>
+    <div class="nodes"><span class="node-chip">Background Check API</span><span class="node-chip">Secrets Manager</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#22 No Evaluation Framework</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Evaluation framework present with testing tool and monitoring/feedback tools.</p>
+    <p class="detail">The architecture includes an &quot;Eval Framework&quot; tool (category=Testing) for golden dataset evaluation, an &quot;Observability Service&quot; (category=Monitoring) tracking agent metrics, and a &quot;Survey Tool&quot; (category=Feedback) collecting quality signals, satisfying pattern #22.</p>
+    <div class="nodes"><span class="node-chip">Eval Framework</span><span class="node-chip">Observability Service</span><span class="node-chip">Survey Tool</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#23 Prompt Fragility</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Prompt management is templated for all agents, indicating structured and maintainable prompt handling.</p>
+    <p class="detail">Every agent (HR Orchestrator, Recruitment Agent, Onboarding Agent, Payroll Agent, Leave Management Agent, Performance Review Agent, Employee Relations Agent, Compliance Agent, Screening Agent, Interview Scheduler) uses promptMgmt=Templated, demonstrating consistent use of prompt templates rather than hard‑coded or unmanaged prompts.</p>
+    <div class="nodes"><span class="node-chip">HR Orchestrator</span><span class="node-chip">Recruitment Agent</span><span class="node-chip">Onboarding Agent</span><span class="node-chip">Payroll Agent</span><span class="node-chip">Leave Management Agent</span><span class="node-chip">Performance Review Agent</span><span class="node-chip">Employee Relations Agent</span><span class="node-chip">Compliance Agent</span><span class="node-chip">Screening Agent</span><span class="node-chip">Interview Scheduler</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#25 Stateless Between Sessions</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Agents maintain long‑term or both memory and knowledge bases are accessed via retrieval strategies, ensuring state persists across sessions.</p>
+    <p class="detail">All agents specify memory=Long-term or Both, and knowledge nodes provide structured retrieval (Hybrid) suitable for persistent session state. Human interactions flow through HR Orchestrator which retains context, and policy/benefit data is stored in knowledge nodes.</p>
+    <div class="nodes"><span class="node-chip">HR Orchestrator</span><span class="node-chip">Recruitment Agent</span><span class="node-chip">Onboarding Agent</span><span class="node-chip">Payroll Agent</span><span class="node-chip">Leave Management Agent</span><span class="node-chip">Performance Review Agent</span><span class="node-chip">Employee Relations Agent</span><span class="node-chip">Compliance Agent</span><span class="node-chip">Screening Agent</span><span class="node-chip">Interview Scheduler</span><span class="node-chip">Job Descriptions DB</span><span class="node-chip">Training Materials</span><span class="node-chip">Benefits Catalog</span><span class="node-chip">Company Policies</span><span class="node-chip">Labor Law Database</span></div>
+</div>
+<h2>Operational</h2>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#29 RAG as a Black Box</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">RAG is used without query preprocessing or reranking tools, making it a black‑box retrieval component.</p>
+    <p class="detail">All knowledge sources use a hybrid (RAG + keyword) retrieval strategy but no connected tools of category processing (e.g., query rewriting) or extraction (e.g., reranking) are present, indicating the RAG layer is opaque.</p>
+    <div class="nodes"><span class="node-chip">Job Descriptions DB</span><span class="node-chip">Training Materials</span><span class="node-chip">Benefits Catalog</span><span class="node-chip">Company Policies</span><span class="node-chip">Labor Law Database</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#26 Flying Blind</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Monitoring tooling is present and connected, providing structured logging, tracing, and alerts.</p>
+    <p class="detail">The architecture includes an 'Observability Service' (category=Monitoring) linked to the HR Orchestrator, and no agents lack observability. This satisfies the Flying Blind anti‑pattern mitigation.</p>
+    <div class="nodes"><span class="node-chip">Observability Service</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#27 No Caching Strategy</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Caching strategy implemented via Semantic Cache tool</p>
+    <p class="detail">The architecture includes a tool with toolCategory=Caching ('Semantic Cache') that is idempotent and connected to the central HR Orchestrator, providing semantic response caching for LLM calls and reducing latency and cost.</p>
+    <div class="nodes"><span class="node-chip">Semantic Cache</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#28 Context Window Mismanagement</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Context window is managed via Prioritised strategy across all agents</p>
+    <p class="detail">All agents specify contextStrategy=Prioritised, aligning with best practices for handling varied knowledge volumes; no agents lack a context strategy and knowledge sources use hybrid retrieval with chunking, reducing unmanaged context growth</p>
+    <div class="nodes"><span class="node-chip">HR Orchestrator</span><span class="node-chip">Recruitment Agent</span><span class="node-chip">Onboarding Agent</span><span class="node-chip">Payroll Agent</span><span class="node-chip">Leave Management Agent</span><span class="node-chip">Performance Review Agent</span><span class="node-chip">Employee Relations Agent</span><span class="node-chip">Compliance Agent</span><span class="node-chip">Screening Agent</span><span class="node-chip">Interview Scheduler</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#30 No Feedback Loop</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Feedback loop mechanisms are present</p>
+    <p class="detail">The architecture includes a feedback tool (Survey Tool) for collecting user ratings and corrections, a monitoring tool (Observability Service) for drift detection, and a human node (End User) with behaviors that provide feedback, establishing a continuous improvement loop.</p>
+    <div class="nodes"><span class="node-chip">Survey Tool</span><span class="node-chip">Observability Service</span><span class="node-chip">End User</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#31 Security as an Afterthought</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Security integrated throughout the architecture.</p>
+    <p class="detail">Tools use authenticated methods (apiKey, oauth, bearerToken); security tool 'Secrets Manager' present; monitoring tool 'Observability Service' provides audit logging; all knowledge nodes have sensitivity defined.</p>
+    <div class="nodes"><span class="node-chip">Secrets Manager</span><span class="node-chip">Observability Service</span><span class="node-chip">ATS API</span><span class="node-chip">Background Check API</span><span class="node-chip">Calendar API</span><span class="node-chip">Document Generator</span><span class="node-chip">Email &amp; Notifications</span><span class="node-chip">Payroll Processor</span><span class="node-chip">HRIS API</span><span class="node-chip">Survey Tool</span></div>
+</div>
+<div class="footer">
+    <p>Analyzed on-device &mdash; 47 findings across 5 categories</p>
+</div>
+</div>
+</body>
+</html>

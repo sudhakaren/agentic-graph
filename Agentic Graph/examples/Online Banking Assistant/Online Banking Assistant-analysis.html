@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analysis — Online Banking Assistant</title>
+<style>
+    :root { --bg: #ffffff; --fg: #1d1d1f; --muted: #6e6e73; --border: #d2d2d7; --accent: #0066cc; --section-bg: #f5f5f7; }
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) { --bg: #1d1d1f; --fg: #f5f5f7; --muted: #98989d; --border: #424245; --accent: #2997ff; --section-bg: #2c2c2e; }
+    }
+    [data-theme="dark"] { --bg: #1d1d1f; --fg: #f5f5f7; --muted: #98989d; --border: #424245; --accent: #2997ff; --section-bg: #2c2c2e; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; padding: 40px 20px; }
+    .container { max-width: 900px; margin: 0 auto; }
+    h1 { font-size: 2em; margin-bottom: 0.3em; }
+    h2 { font-size: 1.4em; margin-top: 2em; margin-bottom: 0.6em; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.3em; }
+    .overview { font-size: 1.1em; color: var(--muted); margin-bottom: 1.5em; }
+    .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 2em; }
+    .summary-card { background: var(--section-bg); border-radius: 8px; padding: 16px; text-align: center; }
+    .summary-card .count { font-size: 2em; font-weight: 700; }
+    .summary-card .label { font-size: 0.85em; color: var(--muted); }
+    .summary-card.warning .count { color: #ff3b30; }
+    .summary-card.recommendation .count { color: #ff9500; }
+    .summary-card.positive .count { color: #34c759; }
+    .summary-card.info .count { color: #007aff; }
+    .finding { background: var(--section-bg); border-radius: 8px; padding: 16px 20px; margin-bottom: 12px; }
+    .finding.warning { border-left: 4px solid #ff3b30; }
+    .finding.recommendation { border-left: 4px solid #ff9500; }
+    .finding.positive { border-left: 4px solid #34c759; }
+    .finding.info { border-left: 4px solid #007aff; }
+    .finding-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .finding-header .icon { font-size: 1.2em; }
+    .finding-header .title { font-weight: 600; }
+    .finding-header .severity { font-size: 0.75em; text-transform: uppercase; letter-spacing: 0.05em; padding: 2px 7px; border-radius: 4px; font-weight: 600; }
+    .severity-warning { background: #ff3b3015; color: #ff3b30; }
+    .severity-recommendation { background: #ff950015; color: #ff9500; }
+    .severity-positive { background: #34c75915; color: #34c759; }
+    .severity-info { background: #007aff15; color: #007aff; }
+    .finding .summary { margin-bottom: 4px; }
+    .finding .detail { color: var(--muted); font-size: 0.9em; }
+    .finding .nodes { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 4px; }
+    .finding .node-chip { display: inline-block; font-size: 0.8em; padding: 2px 8px; border-radius: 12px; background: var(--bg); border: 1px solid var(--border); }
+    .footer { margin-top: 3em; padding-top: 1em; border-top: 1px solid var(--border); font-size: 0.85em; color: var(--muted); }
+    .theme-toggle { position: fixed; top: 16px; right: 16px; background: var(--section-bg); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; cursor: pointer; font-size: 18px; line-height: 1; color: var(--fg); z-index: 100; }
+    .theme-toggle:hover { background: var(--border); }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="let d=document.documentElement;let t=d.getAttribute('data-theme');d.setAttribute('data-theme',t==='dark'?'light':'dark');this.textContent=t==='dark'?'\u263E':'\u2600\uFE0F'" aria-label="Toggle theme">&#x263E;</button>
+<div class="container">
+<h1>Architecture Analysis</h1>
+<p class="overview">Online Banking Assistant &mdash; 31 March 2026 at 13:12</p>
+
+<div style="background: var(--section-bg); border-left: 3px solid #ff9500; border-radius: 6px; padding: 10px 14px; margin-bottom: 1.5em; font-size: 0.85em; color: var(--muted);">
+    <strong style="color: var(--fg);">AI Disclaimer:</strong> This analysis was generated with AI. Results may be inaccurate and should be reviewed by a qualified professional before making decisions.
+</div>
+
+<div class="summary-grid">
+    <div class="summary-card warning"><div class="count">13</div><div class="label">Warnings</div></div>
+    <div class="summary-card recommendation"><div class="count">0</div><div class="label">Recommendations</div></div>
+    <div class="summary-card positive"><div class="count">29</div><div class="label">Positive</div></div>
+    <div class="summary-card info"><div class="count">0</div><div class="label">Info</div></div>
+</div>
+<h2>Foundational</h2>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#4 All-or-Nothing Autonomy</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Missing risk configuration and overall risk level leads to all-or-nothing autonomy.</p>
+    <p class="detail">Agents lack knowledgeRisk attributes, overallRiskLevel is not set for the project, and no human-in-the-loop is defined for any high‑risk paths, creating unchecked autonomous decision making.</p>
+    <div class="nodes"><span class="node-chip">Banking Orchestrator</span><span class="node-chip">Loans &amp; Credit Agent</span><span class="node-chip">Account Manager Agent</span><span class="node-chip">Fraud Detection Agent</span><span class="node-chip">Payments Agent</span><span class="node-chip">Notification Agent</span><span class="node-chip">Customer Service Agent</span></div>
+</div>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#5 Passing As-Is Content Through the Model</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Agents handle sensitive banking content without delivery or processing tools and without human verification, leading to raw content pass‑through.</p>
+    <p class="detail">The architecture lacks any toolCategory=delivery tools for verbatim content output, lacks toolCategory=processing tools for content formatting, and has no human nodes with humanChannel configured for content review. Sensitive operations (e.g., payments, fraud alerts) are passed directly between agents and external APIs without these safeguards, representing a clear anti‑pattern.</p>
+    <div class="nodes"><span class="node-chip">Banking Orchestrator</span><span class="node-chip">Loans &amp; Credit Agent</span><span class="node-chip">Account Manager Agent</span><span class="node-chip">Fraud Detection Agent</span><span class="node-chip">Payments Agent</span><span class="node-chip">Notification Agent</span><span class="node-chip">Customer Service Agent</span></div>
+</div>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#6 Chasing Exotic Agent Patterns</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Excessive orchestrator agents and universal delegation create unnecessary complexity.</p>
+    <p class="detail">The architecture includes two agents typed as Orchestrator (Banking Orchestrator, Account Manager Agent) despite a single supervisory coordinator being sufficient, and every agent has delegation enabled, leading to potential deep delegation chains and over‑orchestration.</p>
+    <div class="nodes"><span class="node-chip">Banking Orchestrator</span><span class="node-chip">Account Manager Agent</span><span class="node-chip">Loans &amp; Credit Agent</span><span class="node-chip">Fraud Detection Agent</span><span class="node-chip">Payments Agent</span><span class="node-chip">Notification Agent</span><span class="node-chip">Customer Service Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#1 Monolithic Mega-Prompt</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Architecture follows a modular multi‑agent pattern, avoiding a monolithic mega‑prompt.</p>
+    <p class="detail">The system includes a dedicated orchestrator (Banking Orchestrator) that routes requests to several specialist worker agents (Loans &amp; Credit Agent, Account Manager Agent, Fraud Detection Agent, Payments Agent, Notification Agent, Customer Service Agent). Each agent has a distinct role and goal, and delegation is enabled, demonstrating focused prompts and proper separation of concerns.</p>
+    <div class="nodes"><span class="node-chip">Banking Orchestrator</span><span class="node-chip">Loans &amp; Credit Agent</span><span class="node-chip">Account Manager Agent</span><span class="node-chip">Fraud Detection Agent</span><span class="node-chip">Payments Agent</span><span class="node-chip">Notification Agent</span><span class="node-chip">Customer Service Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#2 Agent-as-Business-Process Fallacy</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Appropriate mix of agents with a workflow tool for deterministic, compliance‑sensitive processes.</p>
+    <p class="detail">The architecture uses a Process Engine (toolCategory=Workflow, toolType=Flow) for controlled steps such as authentication, approval gates and audit trails, while agents are reserved for reasoning, routing, and handling complex interactions. Delivery tool (Push Notification Service) is used for output. This aligns with the recommended pattern.</p>
+    <div class="nodes"><span class="node-chip">Process Engine</span><span class="node-chip">Banking Orchestrator</span><span class="node-chip">Payments Agent</span><span class="node-chip">Fraud Detection Agent</span><span class="node-chip">Notification Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#3 Invisible State</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">All agents have explicit memory configuration (Both) and are connected to knowledge sources for state persistence.</p>
+    <p class="detail">Every agent specifies memory=Both, and multiple knowledge nodes (Customer FAQ &amp; Help Centre, Product Catalogue, Banking Regulations) are linked to agents, providing reliable state storage and retrieval.</p>
+    <div class="nodes"><span class="node-chip">Banking Orchestrator</span><span class="node-chip">Loans &amp; Credit Agent</span><span class="node-chip">Account Manager Agent</span><span class="node-chip">Fraud Detection Agent</span><span class="node-chip">Payments Agent</span><span class="node-chip">Notification Agent</span><span class="node-chip">Customer Service Agent</span><span class="node-chip">Customer FAQ &amp; Help Centre</span><span class="node-chip">Product Catalogue</span><span class="node-chip">Banking Regulations</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#4 All-or-Nothing Autonomy</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Guardrail tool and human access are defined.</p>
+    <p class="detail">A guardrail tool (Input Validator) is connected at the orchestrator level, and a human end‑user interacts with the system, providing some oversight.</p>
+    <div class="nodes"><span class="node-chip">Input Validator</span><span class="node-chip">End User</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#6 Chasing Exotic Agent Patterns</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Agent types align with task complexity and specialist roles are used where appropriate.</p>
+    <p class="detail">Worker agents handle domain‑specific tasks (Loans &amp; Credit, Fraud Detection, Payments, Notification, Customer Service) matching their complexity, and the overall agent count (7) is reasonable for the breadth of banking functions.</p>
+    <div class="nodes"><span class="node-chip">Loans &amp; Credit Agent</span><span class="node-chip">Fraud Detection Agent</span><span class="node-chip">Payments Agent</span><span class="node-chip">Notification Agent</span><span class="node-chip">Customer Service Agent</span></div>
+</div>
+<h2>Scale &amp; Reliability</h2>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#8 Tool Data Overload</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Missing processing/extraction tools before agents leads to potential data overload for agents.</p>
+    <p class="detail">None of the tools are categorized as processing or extraction, so agents receive raw data directly without prior filtering or reduction. This matches the anti‑pattern criteria of lacking toolCategory=processing or toolCategory=extraction tools in the pipeline.</p>
+    <div class="nodes"><span class="node-chip">Credit Bureau API</span><span class="node-chip">Core Banking API</span><span class="node-chip">Fraud Scoring Engine</span><span class="node-chip">Payment Gateway</span><span class="node-chip">Push Notification Service</span><span class="node-chip">Card Management API</span><span class="node-chip">Input Validator</span><span class="node-chip">Observability Service</span><span class="node-chip">Semantic Cache</span><span class="node-chip">Eval Framework</span><span class="node-chip">Feedback Collector</span><span class="node-chip">Process Engine</span><span class="node-chip">Secrets Manager</span></div>
+</div>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#13 Responsiveness Afterthought</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Long-running tools lack async configuration, risking responsiveness.</p>
+    <p class="detail">Key tools such as Payment Gateway (timeout=15s), Credit Bureau API (timeout=10s), Core Banking API (timeout=5s), and Fraud Scoring Engine (timeout=2s) are configured as synchronous (async=no). Without asynchronous execution or streaming, these high-latency operations can block the agent chain, leading to poor responsiveness.</p>
+    <div class="nodes"><span class="node-chip">Payment Gateway</span><span class="node-chip">Credit Bureau API</span><span class="node-chip">Core Banking API</span><span class="node-chip">Fraud Scoring Engine</span></div>
+</div>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#14 Unbound Execution Cost</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">All agents share the same LLM model without right‑sizing, leading to unbound execution cost risk.</p>
+    <p class="detail">Every agent (Banking Orchestrator, Loans &amp; Credit Agent, Account Manager Agent, Fraud Detection Agent, Payments Agent, Notification Agent, Customer Service Agent) uses the identical model claude‑sonnet‑4‑20250514, which prevents cost optimization per workload complexity.</p>
+    <div class="nodes"><span class="node-chip">Banking Orchestrator</span><span class="node-chip">Loans &amp; Credit Agent</span><span class="node-chip">Account Manager Agent</span><span class="node-chip">Fraud Detection Agent</span><span class="node-chip">Payments Agent</span><span class="node-chip">Notification Agent</span><span class="node-chip">Customer Service Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#7 Tool Soup</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Tool usage is well scoped per agent with distinct categories and appropriate subsets per role.</p>
+    <p class="detail">No agent is connected to 10+ tools; each agent uses a limited, role‑specific set of tools. The Banking Orchestrator uses a collection of distinct tool categories (guardrail, monitoring, caching, testing, feedback, workflow, security) while specialist agents each connect to a single domain‑specific tool, aligning with the recommended pattern.</p>
+    <div class="nodes"><span class="node-chip">Banking Orchestrator</span><span class="node-chip">Loans &amp; Credit Agent</span><span class="node-chip">Account Manager Agent</span><span class="node-chip">Fraud Detection Agent</span><span class="node-chip">Payments Agent</span><span class="node-chip">Notification Agent</span><span class="node-chip">Customer Service Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#8 Tool Data Overload</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">All tools define explicit inputs, outputs, and dataVolume, mitigating overload at the tool level.</p>
+    <p class="detail">Each tool lists its required inputs and produced outputs, and dataVolume is specified (small). Guardrail and caching tools are also present, providing validation and response reuse.</p>
+    <div class="nodes"><span class="node-chip">Credit Bureau API</span><span class="node-chip">Core Banking API</span><span class="node-chip">Fraud Scoring Engine</span><span class="node-chip">Payment Gateway</span><span class="node-chip">Push Notification Service</span><span class="node-chip">Card Management API</span><span class="node-chip">Input Validator</span><span class="node-chip">Observability Service</span><span class="node-chip">Semantic Cache</span><span class="node-chip">Eval Framework</span><span class="node-chip">Feedback Collector</span><span class="node-chip">Process Engine</span><span class="node-chip">Secrets Manager</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#9 Agent Washing</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Architecture avoids agent washing by using reasoning/conditional agents for dynamic decisions and employing tools (API/flow) for deterministic operations.</p>
+    <p class="detail">All agents have agentComplexity set to Reasoning or Conditional, and deterministic tasks are handled by dedicated tools such as Core Banking API, Payment Gateway, and Process Engine. No agents with agentComplexity=deterministic are present.</p>
+    <div class="nodes"><span class="node-chip">Banking Orchestrator</span><span class="node-chip">Loans &amp; Credit Agent</span><span class="node-chip">Account Manager Agent</span><span class="node-chip">Fraud Detection Agent</span><span class="node-chip">Payments Agent</span><span class="node-chip">Notification Agent</span><span class="node-chip">Customer Service Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#10 Trust Before Verify</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Architecture follows Trust Before Verify principles: all tools use strong authentication (OAuth or Bearer Token), monitoring tool present, and security tooling included.</p>
+    <p class="detail">Every tool is configured with authMethod=OAuth or Bearer Token, a dedicated Monitoring tool (Observability Service) is integrated, and a Security tool (Secrets Manager) is present, demonstrating verification before trusting external interactions.</p>
+    <div class="nodes"><span class="node-chip">Credit Bureau API</span><span class="node-chip">Core Banking API</span><span class="node-chip">Fraud Scoring Engine</span><span class="node-chip">Payment Gateway</span><span class="node-chip">Push Notification Service</span><span class="node-chip">Card Management API</span><span class="node-chip">Input Validator</span><span class="node-chip">Observability Service</span><span class="node-chip">Semantic Cache</span><span class="node-chip">Eval Framework</span><span class="node-chip">Feedback Collector</span><span class="node-chip">Process Engine</span><span class="node-chip">Secrets Manager</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#11 Happy Path Engineering</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">The architecture configures error handling (retry) on most external tools and marks several guardrail and workflow tools as idempotent, indicating awareness of failure mitigation and happy‑path support.</p>
+    <p class="detail">Tools such as Credit Bureau API, Core Banking API, Payment Gateway, Push Notification Service, and Card Management API use errorHandling=Retry. Guardrail and infrastructure tools (Input Validator, Observability Service, Semantic Cache, Eval Framework, Process Engine, Secrets Manager) are marked idempotent=true, providing safe retry semantics. These configurations help avoid strict happy‑path engineering.</p>
+    <div class="nodes"><span class="node-chip">Credit Bureau API</span><span class="node-chip">Core Banking API</span><span class="node-chip">Payment Gateway</span><span class="node-chip">Push Notification Service</span><span class="node-chip">Card Management API</span><span class="node-chip">Input Validator</span><span class="node-chip">Observability Service</span><span class="node-chip">Semantic Cache</span><span class="node-chip">Eval Framework</span><span class="node-chip">Process Engine</span><span class="node-chip">Secrets Manager</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#12 Multi-Agent Chaos</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Clear multi-agent coordination with defined roles, goals, and orchestrator presence</p>
+    <p class="detail">All agents have distinct roles and goals, there are orchestrator-type agents (Banking Orchestrator, Account Manager Agent), and shared knowledge sources (Customer FAQ &amp; Help Centre, Product Catalogue, Banking Regulations) are connected to multiple coordinating agents, enabling effective coordination.</p>
+    <div class="nodes"><span class="node-chip">Banking Orchestrator</span><span class="node-chip">Account Manager Agent</span><span class="node-chip">Loans &amp; Credit Agent</span><span class="node-chip">Fraud Detection Agent</span><span class="node-chip">Payments Agent</span><span class="node-chip">Notification Agent</span><span class="node-chip">Customer Service Agent</span><span class="node-chip">Customer FAQ &amp; Help Centre</span><span class="node-chip">Product Catalogue</span><span class="node-chip">Banking Regulations</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#13 Responsiveness Afterthought</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Latency budgets and caching are defined to support responsiveness.</p>
+    <p class="detail">All agents specify a latencyBudget of 3s, and the architecture includes a caching tool (Semantic Cache) to reduce latency for repeated queries. Tool timeouts are explicitly set, and cost budgets are defined for agents.</p>
+    <div class="nodes"><span class="node-chip">Banking Orchestrator</span><span class="node-chip">Loans &amp; Credit Agent</span><span class="node-chip">Account Manager Agent</span><span class="node-chip">Fraud Detection Agent</span><span class="node-chip">Payments Agent</span><span class="node-chip">Notification Agent</span><span class="node-chip">Customer Service Agent</span><span class="node-chip">Semantic Cache</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#14 Unbound Execution Cost</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Agents have explicit maxIter and costBudget settings, and monitoring tools are integrated for observability.</p>
+    <p class="detail">Each agent defines maxIter (10‑15) and a costBudget of $0.50 per session, and the Observability Service provides structured tracing for latency and token usage, supporting cost awareness.</p>
+    <div class="nodes"><span class="node-chip">Banking Orchestrator</span><span class="node-chip">Loans &amp; Credit Agent</span><span class="node-chip">Account Manager Agent</span><span class="node-chip">Fraud Detection Agent</span><span class="node-chip">Payments Agent</span><span class="node-chip">Notification Agent</span><span class="node-chip">Customer Service Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#15 Demo-Grade Agent in Production</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Production‑grade agents with structured observability, monitoring and security tools, and defined latency &amp; cost budgets deployed to a hybrid environment.</p>
+    <p class="detail">All agents specify observability=Structured Tracing, the project deploymentTarget is Hybrid, monitoring tool (Observability Service) and security tool (Secrets Manager) are present, and each agent defines latencyBudget=3s and costBudget=$0.50/session.</p>
+    <div class="nodes"><span class="node-chip">Banking Orchestrator</span><span class="node-chip">Loans &amp; Credit Agent</span><span class="node-chip">Account Manager Agent</span><span class="node-chip">Fraud Detection Agent</span><span class="node-chip">Payments Agent</span><span class="node-chip">Notification Agent</span><span class="node-chip">Customer Service Agent</span><span class="node-chip">Observability Service</span><span class="node-chip">Secrets Manager</span></div>
+</div>
+<h2>Knowledge &amp; Document Processing</h2>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#19 One-Size-Fits-All Chunking</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Uniform chunking strategy across disparate knowledge types</p>
+    <p class="detail">All three knowledge nodes use the same semantic chunking of 512 tokens despite differing content types (Legal/Regulatory, Product Catalog, FAQ), indicating a one-size-fits-all approach.</p>
+    <div class="nodes"><span class="node-chip">Banking Regulations</span><span class="node-chip">Product Catalogue</span><span class="node-chip">Customer FAQ &amp; Help Centre</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#17 Lazy Field Definitions</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Knowledge nodes fully specify data formats, content types, sensitivity, and size, indicating proper field definitions.</p>
+    <p class="detail">All three knowledge sources include explicit formats, content types, sensitivity classifications, and size information, meeting the Lazy Field Definitions best practices.</p>
+    <div class="nodes"><span class="node-chip">Banking Regulations</span><span class="node-chip">Product Catalogue</span><span class="node-chip">Customer FAQ &amp; Help Centre</span></div>
+</div>
+<h2>Design-Time</h2>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#21 Implicit Routing</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Implicit routing detected due to absence of a dedicated router agent.</p>
+    <p class="detail">The architecture routes intents through the &quot;Banking Orchestrator&quot; (type=Orchestrator) rather than using a specialized agent with agentType=router or supervisor. No routing-specific tools are present, indicating implicit routing logic is embedded in a general orchestrator.</p>
+    <div class="nodes"><span class="node-chip">Banking Orchestrator</span></div>
+</div>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#24 Bolted-On Human-in-the-Loop</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">The architecture lacks a proper human-in-the-loop for oversight and decision correction.</p>
+    <p class="detail">Only a single human node representing the end customer is present, with no humanRole/humanChannel for supervisory input. Although a Feedback Collector tool exists, it is not connected to a designated human reviewer, and no feedback or correction pathways are defined for agents handling high‑risk operations.</p>
+    <div class="nodes"><span class="node-chip">End User</span><span class="node-chip">Feedback Collector</span><span class="node-chip">Banking Orchestrator</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#20 No Guardrails</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Guardrail tool present at input boundary and workflow orchestration.</p>
+    <p class="detail">The architecture includes the &quot;Input Validator&quot; tool (category=Guardrail) connected to the Banking Orchestrator, providing input validation and sanitization before agents process user requests. This satisfies the guardrail requirement at the system entry point.</p>
+    <div class="nodes"><span class="node-chip">Input Validator</span><span class="node-chip">Banking Orchestrator</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#22 No Evaluation Framework</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Evaluation framework present</p>
+    <p class="detail">The architecture includes an &quot;Eval Framework&quot; tool categorized as Testing, providing golden dataset evaluation, regression testing, and A/B comparison for agent quality.</p>
+    <div class="nodes"><span class="node-chip">Eval Framework</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#23 Prompt Fragility</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Prompt management is handled via templated prompts for all agents.</p>
+    <p class="detail">All seven agents specify promptMgmt=Templated, indicating systematic use of prompt templates rather than hard‑coded or absent prompt management. This reduces prompt fragility and supports maintainability.</p>
+    <div class="nodes"><span class="node-chip">Banking Orchestrator</span><span class="node-chip">Loans &amp; Credit Agent</span><span class="node-chip">Account Manager Agent</span><span class="node-chip">Fraud Detection Agent</span><span class="node-chip">Payments Agent</span><span class="node-chip">Notification Agent</span><span class="node-chip">Customer Service Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#25 Stateless Between Sessions</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Agents maintain persistent state across sessions (memory=Both) and connect to knowledge bases for contextual information, supporting statelessness between sessions.</p>
+    <p class="detail">All seven agents are configured with memory=Both, enabling long‑term state retention. Knowledge nodes (Banking Regulations, Product Catalogue, Customer FAQ &amp; Help Centre) are accessed by agents to retrieve session‑relevant data, ensuring continuity without requiring per‑session state storage.</p>
+    <div class="nodes"><span class="node-chip">Banking Orchestrator</span><span class="node-chip">Loans &amp; Credit Agent</span><span class="node-chip">Account Manager Agent</span><span class="node-chip">Fraud Detection Agent</span><span class="node-chip">Payments Agent</span><span class="node-chip">Notification Agent</span><span class="node-chip">Customer Service Agent</span></div>
+</div>
+<h2>Operational</h2>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#31 Security as an Afterthought</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Human authentication not explicitly configured, indicating security considered after design.</p>
+    <p class="detail">The End User human node lacks a defined humanAuthMethod, which is a clear signal of security being an afterthought for user access control.</p>
+    <div class="nodes"><span class="node-chip">End User</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#26 Flying Blind</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Monitoring and observability are integrated via the Observability Service tool, providing structured logging, tracing, and alerts for agents.</p>
+    <p class="detail">The architecture includes a tool of category=Monitoring named &quot;Observability Service&quot; connected to the Banking Orchestrator, ensuring agents have visibility into latency, token usage, and error rates, satisfying the Flying Blind pattern avoidance.</p>
+    <div class="nodes"><span class="node-chip">Observability Service</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#27 No Caching Strategy</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Caching strategy present</p>
+    <p class="detail">Semantic Cache (category=Caching, idempotent=yes) is connected from the Banking Orchestrator, providing semantic response caching for LLM calls, reducing latency and cost.</p>
+    <div class="nodes"><span class="node-chip">Semantic Cache</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#28 Context Window Mismanagement</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">All agents use a Prioritised context strategy, aligning with best practices for managing context windows.</p>
+    <p class="detail">Each agent specifies contextStrategy=Prioritised, ensuring appropriate handling of context volume. No agents lack a context strategy, and the architecture includes no large unfiltered knowledge feeds without summarisation tools.</p>
+    <div class="nodes"><span class="node-chip">Banking Orchestrator</span><span class="node-chip">Loans &amp; Credit Agent</span><span class="node-chip">Account Manager Agent</span><span class="node-chip">Fraud Detection Agent</span><span class="node-chip">Payments Agent</span><span class="node-chip">Notification Agent</span><span class="node-chip">Customer Service Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#30 No Feedback Loop</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Feedback loop mechanisms are present</p>
+    <p class="detail">The architecture includes a Feedback Collector tool for capturing user ratings and corrections, an Observability Service for monitoring and drift detection, and the End User human node provides feedback behavior, establishing a continuous improvement loop.</p>
+    <div class="nodes"><span class="node-chip">Feedback Collector</span><span class="node-chip">Observability Service</span><span class="node-chip">End User</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#31 Security as an Afterthought</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Strong security and monitoring controls are integrated throughout the system.</p>
+    <p class="detail">All API tools use OAuth or Bearer Token authentication, a dedicated security tool (Secrets Manager) is present, and monitoring/audit logging is provided by the Observability Service. Human access levels are defined and knowledge sensitivity is set for all knowledge nodes.</p>
+    <div class="nodes"><span class="node-chip">Credit Bureau API</span><span class="node-chip">Core Banking API</span><span class="node-chip">Fraud Scoring Engine</span><span class="node-chip">Payment Gateway</span><span class="node-chip">Push Notification Service</span><span class="node-chip">Card Management API</span><span class="node-chip">Input Validator</span><span class="node-chip">Observability Service</span><span class="node-chip">Secrets Manager</span></div>
+</div>
+<div class="footer">
+    <p>Analyzed on-device &mdash; 42 findings across 5 categories</p>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,12 @@
+[project]
+name = "autogen_software_team"
+version = "0.1.0"
+description = "An AutoGen / AG2 group-chat software team — sample for Agentic Graph"
+requires-python = ">=3.10"
+dependencies = [
+    "ag2>=0.4",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

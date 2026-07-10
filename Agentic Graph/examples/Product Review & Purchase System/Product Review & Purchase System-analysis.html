@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analysis — Product Review &amp; Purchase System</title>
+<style>
+    :root { --bg: #ffffff; --fg: #1d1d1f; --muted: #6e6e73; --border: #d2d2d7; --accent: #0066cc; --section-bg: #f5f5f7; }
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) { --bg: #1d1d1f; --fg: #f5f5f7; --muted: #98989d; --border: #424245; --accent: #2997ff; --section-bg: #2c2c2e; }
+    }
+    [data-theme="dark"] { --bg: #1d1d1f; --fg: #f5f5f7; --muted: #98989d; --border: #424245; --accent: #2997ff; --section-bg: #2c2c2e; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; padding: 40px 20px; }
+    .container { max-width: 900px; margin: 0 auto; }
+    h1 { font-size: 2em; margin-bottom: 0.3em; }
+    h2 { font-size: 1.4em; margin-top: 2em; margin-bottom: 0.6em; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.3em; }
+    .overview { font-size: 1.1em; color: var(--muted); margin-bottom: 1.5em; }
+    .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 2em; }
+    .summary-card { background: var(--section-bg); border-radius: 8px; padding: 16px; text-align: center; }
+    .summary-card .count { font-size: 2em; font-weight: 700; }
+    .summary-card .label { font-size: 0.85em; color: var(--muted); }
+    .summary-card.warning .count { color: #ff3b30; }
+    .summary-card.recommendation .count { color: #ff9500; }
+    .summary-card.positive .count { color: #34c759; }
+    .summary-card.info .count { color: #007aff; }
+    .finding { background: var(--section-bg); border-radius: 8px; padding: 16px 20px; margin-bottom: 12px; }
+    .finding.warning { border-left: 4px solid #ff3b30; }
+    .finding.recommendation { border-left: 4px solid #ff9500; }
+    .finding.positive { border-left: 4px solid #34c759; }
+    .finding.info { border-left: 4px solid #007aff; }
+    .finding-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .finding-header .icon { font-size: 1.2em; }
+    .finding-header .title { font-weight: 600; }
+    .finding-header .severity { font-size: 0.75em; text-transform: uppercase; letter-spacing: 0.05em; padding: 2px 7px; border-radius: 4px; font-weight: 600; }
+    .severity-warning { background: #ff3b3015; color: #ff3b30; }
+    .severity-recommendation { background: #ff950015; color: #ff9500; }
+    .severity-positive { background: #34c75915; color: #34c759; }
+    .severity-info { background: #007aff15; color: #007aff; }
+    .finding .summary { margin-bottom: 4px; }
+    .finding .detail { color: var(--muted); font-size: 0.9em; }
+    .finding .nodes { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 4px; }
+    .finding .node-chip { display: inline-block; font-size: 0.8em; padding: 2px 8px; border-radius: 12px; background: var(--bg); border: 1px solid var(--border); }
+    .footer { margin-top: 3em; padding-top: 1em; border-top: 1px solid var(--border); font-size: 0.85em; color: var(--muted); }
+    .theme-toggle { position: fixed; top: 16px; right: 16px; background: var(--section-bg); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; cursor: pointer; font-size: 18px; line-height: 1; color: var(--fg); z-index: 100; }
+    .theme-toggle:hover { background: var(--border); }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="let d=document.documentElement;let t=d.getAttribute('data-theme');d.setAttribute('data-theme',t==='dark'?'light':'dark');this.textContent=t==='dark'?'\u263E':'\u2600\uFE0F'" aria-label="Toggle theme">&#x263E;</button>
+<div class="container">
+<h1>Architecture Analysis</h1>
+<p class="overview">Product Review &amp; Purchase System &mdash; 31 March 2026 at 13:08</p>
+
+<div style="background: var(--section-bg); border-left: 3px solid #ff9500; border-radius: 6px; padding: 10px 14px; margin-bottom: 1.5em; font-size: 0.85em; color: var(--muted);">
+    <strong style="color: var(--fg);">AI Disclaimer:</strong> This analysis was generated with AI. Results may be inaccurate and should be reviewed by a qualified professional before making decisions.
+</div>
+
+<div class="summary-grid">
+    <div class="summary-card warning"><div class="count">13</div><div class="label">Warnings</div></div>
+    <div class="summary-card recommendation"><div class="count">0</div><div class="label">Recommendations</div></div>
+    <div class="summary-card positive"><div class="count">30</div><div class="label">Positive</div></div>
+    <div class="summary-card info"><div class="count">0</div><div class="label">Info</div></div>
+</div>
+<h2>Foundational</h2>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#2 Agent-as-Business-Process Fallacy</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Agents (Purchase Agent) are used to execute compliance‑sensitive checkout and order creation without a workflow or delivery tool, violating the Agent-as-Business-Process principle.</p>
+    <p class="detail">PCI‑DSS relevant steps (payment processing, order creation) are performed directly by the Purchase Agent using Payment Gateway and Order Service APIs. No workflow (toolCategory=workflow) or delivery tool mediates these deterministic, audit‑required steps, exposing compliance risk.</p>
+    <div class="nodes"><span class="node-chip">Purchase Agent</span><span class="node-chip">Payment Gateway</span><span class="node-chip">Order Service</span></div>
+</div>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#4 All-or-Nothing Autonomy</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Missing risk governance and incomplete autonomy controls</p>
+    <p class="detail">Agents lack knowledgeRisk annotations, overallRiskLevel is not set on the project, and there are no human-in-the-loop safeguards for high‑risk actions. This creates an all‑or‑nothing autonomy scenario where autonomous agents operate without defined risk limits or oversight.</p>
+    <div class="nodes"><span class="node-chip">Customer Assistant</span><span class="node-chip">Review Analyst</span><span class="node-chip">Inventory Checker</span><span class="node-chip">Purchase Agent</span><span class="node-chip">End User</span></div>
+</div>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#5 Passing As-Is Content Through the Model</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Agents pass user content directly to downstream services without delivery or processing tools and without human verification.</p>
+    <p class="detail">All four agents (Customer Assistant, Review Analyst, Inventory Checker, Purchase Agent) handle user input or sensitive data (e.g., payment details) but no toolCategory=delivery or processing tools are connected, and there is no human node with a humanChannel for content review, exposing the system to unfiltered content leakage.</p>
+    <div class="nodes"><span class="node-chip">Customer Assistant</span><span class="node-chip">Review Analyst</span><span class="node-chip">Inventory Checker</span><span class="node-chip">Purchase Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#1 Monolithic Mega-Prompt</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">The architecture uses multiple specialized agents with distinct roles and goals, avoiding a monolithic mega‑prompt.</p>
+    <p class="detail">Four worker agents (Customer Assistant, Review Analyst, Inventory Checker, Purchase Agent) each have focused instructions and specific responsibilities. Delegation is enabled on the primary Customer Assistant, and the system distributes tasks via clear agent‑to‑agent connections.</p>
+    <div class="nodes"><span class="node-chip">Customer Assistant</span><span class="node-chip">Review Analyst</span><span class="node-chip">Inventory Checker</span><span class="node-chip">Purchase Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#2 Agent-as-Business-Process Fallacy</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">The architecture also includes a dedicated workflow tool (Process Engine) and uses agents primarily for reasoning and orchestration.</p>
+    <p class="detail">Customer Assistant delegates deterministic process execution to the Process Engine workflow tool and employs guardrail, observability, and caching tools, keeping agents focused on conversational reasoning.</p>
+    <div class="nodes"><span class="node-chip">Customer Assistant</span><span class="node-chip">Process Engine</span><span class="node-chip">Input Validator</span><span class="node-chip">Observability Service</span><span class="node-chip">Semantic Cache</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#3 Invisible State</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Agents employ appropriate memory configurations and connect to knowledge sources for state persistence.</p>
+    <p class="detail">All agents have short‑term or both memory settings, and each specialist agent is linked to a knowledge node (Review Analyst → Review Database, Inventory Checker → Product Catalogue, Purchase Agent → Customer Profiles). This provides explicit state storage and retrieval, satisfying the Invisible State pattern positively.</p>
+    <div class="nodes"><span class="node-chip">Customer Assistant</span><span class="node-chip">Review Analyst</span><span class="node-chip">Inventory Checker</span><span class="node-chip">Purchase Agent</span><span class="node-chip">Review Database</span><span class="node-chip">Product Catalogue</span><span class="node-chip">Customer Profiles</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#6 Chasing Exotic Agent Patterns</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Agent types align with task complexity and count is appropriate</p>
+    <p class="detail">The architecture uses a single coordinating worker (Customer Assistant) and specialist/worker agents only where domain expertise is needed, with a modest total of four agents for the problem scope.</p>
+    <div class="nodes"><span class="node-chip">Customer Assistant</span><span class="node-chip">Review Analyst</span><span class="node-chip">Inventory Checker</span><span class="node-chip">Purchase Agent</span></div>
+</div>
+<h2>Scale &amp; Reliability</h2>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#8 Tool Data Overload</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Tool Data Overload detected due to missing toolInputs/outputs and absence of processing/extraction tools before agents.</p>
+    <p class="detail">The 'Input Validator' tool lacks defined inputs and outputs, and there are no tools categorized as processing or extraction placed in the pipeline before agents consume data, risking unfiltered data overload.</p>
+    <div class="nodes"><span class="node-chip">Input Validator</span></div>
+</div>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#9 Agent Washing</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Agent Washing detected: a worker agent with only a single tool connection.</p>
+    <p class="detail">The 'Inventory Checker' agent is a worker with complexity=Conditional and is connected solely to the 'Inventory API' tool. This deterministic-like behavior could be replaced by a direct flow or API call, indicating unnecessary agent abstraction.</p>
+    <div class="nodes"><span class="node-chip">Inventory Checker</span></div>
+</div>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#12 Multi-Agent Chaos</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Missing supervisor/orchestrator and lack of shared knowledge for coordination</p>
+    <p class="detail">The architecture has no agent with agentType=supervisor or orchestrator, and each agent relies on its own knowledge source without shared coordination knowledge, indicating potential chaos in multi‑agent interactions.</p>
+    <div class="nodes"><span class="node-chip">Customer Assistant</span><span class="node-chip">Review Analyst</span><span class="node-chip">Inventory Checker</span><span class="node-chip">Purchase Agent</span></div>
+</div>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#14 Unbound Execution Cost</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Agents lack iteration limits, leading to unbounded execution cost.</p>
+    <p class="detail">The 'Review Analyst' and 'Inventory Checker' agents have no maxIter configured, which can cause uncontrolled token usage and runtime cost despite having cost budgets. No dedicated monitoring tool is attached to these agents specifically for cost tracking.</p>
+    <div class="nodes"><span class="node-chip">Review Analyst</span><span class="node-chip">Inventory Checker</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#7 Tool Soup</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Tool usage aligns with recommended limits and distinct categories per agent.</p>
+    <p class="detail">Customer Assistant uses 7 tools with unique categories, while other agents use 1-2 tools each, providing role‑specific tool subsets without overlapping categories.</p>
+    <div class="nodes"><span class="node-chip">Customer Assistant</span><span class="node-chip">Review Analyst</span><span class="node-chip">Inventory Checker</span><span class="node-chip">Purchase Agent</span><span class="node-chip">Input Validator</span><span class="node-chip">Observability Service</span><span class="node-chip">Semantic Cache</span><span class="node-chip">Eval Framework</span><span class="node-chip">Feedback Collector</span><span class="node-chip">Process Engine</span><span class="node-chip">Secrets Manager</span><span class="node-chip">Review Search API</span><span class="node-chip">Inventory API</span><span class="node-chip">Payment Gateway</span><span class="node-chip">Order Service</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#8 Tool Data Overload</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Most tools specify inputs, outputs, and data volume, and include guardrail, monitoring, caching, and security utilities.</p>
+    <p class="detail">Tools such as Review Search API, Inventory API, Payment Gateway, Order Service, Semantic Cache, Observability Service, Eval Framework, Feedback Collector, Process Engine, and Secrets Manager all define inputs/outputs and configure dataVolume, providing structured data handling and supporting good practices.</p>
+    <div class="nodes"><span class="node-chip">Review Search API</span><span class="node-chip">Inventory API</span><span class="node-chip">Payment Gateway</span><span class="node-chip">Order Service</span><span class="node-chip">Semantic Cache</span><span class="node-chip">Observability Service</span><span class="node-chip">Eval Framework</span><span class="node-chip">Feedback Collector</span><span class="node-chip">Process Engine</span><span class="node-chip">Secrets Manager</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#9 Agent Washing</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Use of reasoning agents and minimal deterministic agents.</p>
+    <p class="detail">Agents 'Review Analyst' and 'Purchase Agent' have complexity=Reasoning, handling dynamic decisions. No deterministic agents are present, and simple operations are largely delegated to appropriate API/flow tools.</p>
+    <div class="nodes"><span class="node-chip">Review Analyst</span><span class="node-chip">Purchase Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#10 Trust Before Verify</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Authentication is enforced on all tools and monitoring/security tools are present, indicating trust is verified before use.</p>
+    <p class="detail">All tools use API Key or Bearer Token authentication. A monitoring tool (Observability Service) and a security tool (Secrets Manager) are included. Idempotency is set where appropriate for safe retries.</p>
+    <div class="nodes"><span class="node-chip">Review Search API</span><span class="node-chip">Inventory API</span><span class="node-chip">Payment Gateway</span><span class="node-chip">Order Service</span><span class="node-chip">Input Validator</span><span class="node-chip">Observability Service</span><span class="node-chip">Semantic Cache</span><span class="node-chip">Eval Framework</span><span class="node-chip">Feedback Collector</span><span class="node-chip">Process Engine</span><span class="node-chip">Secrets Manager</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#11 Happy Path Engineering</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Many tools configure retry-based error handling and idempotency where appropriate, supporting resilience beyond the happy path.</p>
+    <p class="detail">Tools such as Review Search API, Inventory API, Input Validator, Observability Service, Semantic Cache, Eval Framework, Process Engine, and Secrets Manager have errorHandling=Retry and idempotent=true where needed, providing fallback mechanisms for failures. This demonstrates attention to error handling beyond the happy path.</p>
+    <div class="nodes"><span class="node-chip">Review Search API</span><span class="node-chip">Inventory API</span><span class="node-chip">Input Validator</span><span class="node-chip">Observability Service</span><span class="node-chip">Semantic Cache</span><span class="node-chip">Eval Framework</span><span class="node-chip">Process Engine</span><span class="node-chip">Secrets Manager</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#12 Multi-Agent Chaos</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Distinct roles and goals defined for each agent</p>
+    <p class="detail">All agents have clear, non‑overlapping agentRole and agentGoal definitions, providing a well‑structured division of responsibilities.</p>
+    <div class="nodes"><span class="node-chip">Customer Assistant</span><span class="node-chip">Review Analyst</span><span class="node-chip">Inventory Checker</span><span class="node-chip">Purchase Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#13 Responsiveness Afterthought</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Responsiveness built into architecture</p>
+    <p class="detail">All tools define explicit timeouts; each agent specifies a latencyBudget of 3s; a caching tool (Semantic Cache) is present to reduce latency; long-running Order Service is configured as async; agentCostBudget further controls expensive operations.</p>
+    <div class="nodes"><span class="node-chip">Customer Assistant</span><span class="node-chip">Review Analyst</span><span class="node-chip">Inventory Checker</span><span class="node-chip">Purchase Agent</span><span class="node-chip">Review Search API</span><span class="node-chip">Inventory API</span><span class="node-chip">Payment Gateway</span><span class="node-chip">Order Service</span><span class="node-chip">Semantic Cache</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#14 Unbound Execution Cost</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Cost controls and monitoring are configured for most agents.</p>
+    <p class="detail">All agents define a costBudget ($0.50/session). The 'Customer Assistant' and 'Purchase Agent' have maxIter set (10 and 5). A monitoring tool ('Observability Service') is connected to the primary agent, and different model sizes are used across agents, indicating right‑sizing.</p>
+    <div class="nodes"><span class="node-chip">Customer Assistant</span><span class="node-chip">Purchase Agent</span><span class="node-chip">Observability Service</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#15 Demo-Grade Agent in Production</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Demo-Grade Agent mitigations are in place</p>
+    <p class="detail">All agents have structured observability, deployment target is Cloud, monitoring (Observability Service) and security (Secrets Manager) tools are present, and latency and cost budgets are configured.</p>
+    <div class="nodes"><span class="node-chip">Customer Assistant</span><span class="node-chip">Review Analyst</span><span class="node-chip">Inventory Checker</span><span class="node-chip">Purchase Agent</span><span class="node-chip">Observability Service</span><span class="node-chip">Secrets Manager</span></div>
+</div>
+<h2>Knowledge &amp; Document Processing</h2>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#18 Using RAG for Whole-Document Operations</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">RAG is used as the primary retrieval strategy for large structured knowledge bases.</p>
+    <p class="detail">All knowledge nodes (Product Catalogue, Review Database, Customer Profiles) are configured with retrieval=Hybrid (RAG + Keyword) and chunked semantically, indicating reliance on generative retrieval for operations that could be performed with structured queries (e.g., counting products, aggregating reviews, looking up customer data). No knowledge nodes use sql or API strategies for these structured tasks, which is an anti‑pattern for whole‑document operations.</p>
+    <div class="nodes"><span class="node-chip">Product Catalogue</span><span class="node-chip">Review Database</span><span class="node-chip">Customer Profiles</span></div>
+</div>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#19 One-Size-Fits-All Chunking</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">All knowledge sources use identical semantic chunking (512 tokens) despite differing content types and risk levels.</p>
+    <p class="detail">The architecture applies a single chunking strategy to Product Catalogue, Review Database, and Customer Profiles, indicating a one-size-fits-all approach and missing tailored chunking for high‑risk PII data.</p>
+    <div class="nodes"><span class="node-chip">Product Catalogue</span><span class="node-chip">Review Database</span><span class="node-chip">Customer Profiles</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#17 Lazy Field Definitions</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">All knowledge nodes define required fields, avoiding lazy field definitions.</p>
+    <p class="detail">Product Catalogue, Review Database, and Customer Profiles all specify knowledgeDataFormats, knowledgeContentType, knowledgeLocation/retrieval strategy, and appropriate knowledgeSensitivity.</p>
+    <div class="nodes"><span class="node-chip">Product Catalogue</span><span class="node-chip">Review Database</span><span class="node-chip">Customer Profiles</span></div>
+</div>
+<h2>Design-Time</h2>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#20 No Guardrails</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Insufficient guardrail coverage across agents</p>
+    <p class="detail">Only the Customer Assistant uses a guardrail tool (Input Validator). Other agents (Review Analyst, Inventory Checker, Purchase Agent) process inputs and perform high‑risk actions (payment, order creation) without guardrail or validation tools, and no human review nodes are present for sensitive outputs.</p>
+    <div class="nodes"><span class="node-chip">Customer Assistant</span><span class="node-chip">Review Analyst</span><span class="node-chip">Inventory Checker</span><span class="node-chip">Purchase Agent</span></div>
+</div>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#21 Implicit Routing</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">Implicit routing detected due to absence of a dedicated router agent.</p>
+    <p class="detail">The architecture relies on the 'Customer Assistant' worker agent to forward requests to specialist agents without a distinct router or supervisor component, indicating implicit routing.</p>
+    <div class="nodes"><span class="node-chip">Customer Assistant</span><span class="node-chip">Review Analyst</span><span class="node-chip">Inventory Checker</span><span class="node-chip">Purchase Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#20 No Guardrails</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Guardrail and security tools are present at system boundaries</p>
+    <p class="detail">The architecture includes a guardrail tool (Input Validator) at the primary user‑facing agent and a security tool (Secrets Manager) for credential protection, demonstrating some defensive measures.</p>
+    <div class="nodes"><span class="node-chip">Input Validator</span><span class="node-chip">Secrets Manager</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#22 No Evaluation Framework</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Evaluation framework and related tools are present</p>
+    <p class="detail">The architecture includes a testing tool (Eval Framework) for golden dataset evaluation, a monitoring tool (Observability Service) tracking latency and error rates, and a feedback tool (Feedback Collector) collecting quality signals, satisfying pattern #22 requirements.</p>
+    <div class="nodes"><span class="node-chip">Eval Framework</span><span class="node-chip">Observability Service</span><span class="node-chip">Feedback Collector</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#23 Prompt Fragility</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Prompt management uses templated approach across all agents</p>
+    <p class="detail">All four agents (Customer Assistant, Review Analyst, Inventory Checker, Purchase Agent) have agentPromptManagement set to Templated, indicating structured prompt handling and reducing fragility.</p>
+    <div class="nodes"><span class="node-chip">Customer Assistant</span><span class="node-chip">Review Analyst</span><span class="node-chip">Inventory Checker</span><span class="node-chip">Purchase Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#24 Bolted-On Human-in-the-Loop</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Human-in-the-loop is integrated via End User node and Feedback Collector tool.</p>
+    <p class="detail">The architecture includes a human node (End User) with role and SLA defined, connected to the Customer Assistant agent, and a feedback tool (Feedback Collector) for capturing user corrections and ratings, satisfying the bolted‑on human‑in‑the‑loop pattern.</p>
+    <div class="nodes"><span class="node-chip">End User</span><span class="node-chip">Feedback Collector</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#25 Stateless Between Sessions</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Stateless Between Sessions pattern is positively addressed</p>
+    <p class="detail">Key agents (Customer Assistant and Purchase Agent) use both short- and long-term memory, and persistent knowledge stores (Product Catalogue, Review Database, Customer Profiles) provide session state across interactions, enabling continuity for users.</p>
+    <div class="nodes"><span class="node-chip">Customer Assistant</span><span class="node-chip">Purchase Agent</span><span class="node-chip">Customer Profiles</span></div>
+</div>
+<h2>Operational</h2>
+<div class="finding warning">
+    <div class="finding-header">
+        <span class="icon">⚠️</span>
+        <span class="title">#29 RAG as a Black Box</span>
+        <span class="severity severity-warning">Warning</span>
+    </div>
+    <p class="summary">RAG is used without supporting preprocessing or reranking tools, making retrieval a black box.</p>
+    <p class="detail">Knowledge nodes (Product Catalogue, Review Database, Customer Profiles) use hybrid RAG retrieval but have no connected toolCategory=processing tools for query rewriting nor toolCategory=extraction tools for reranking, indicating opaque RAG usage.</p>
+    <div class="nodes"><span class="node-chip">Product Catalogue</span><span class="node-chip">Review Database</span><span class="node-chip">Customer Profiles</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#26 Flying Blind</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Monitoring tools are integrated, providing structured logging and tracing.</p>
+    <p class="detail">The 'Observability Service' tool (category=Monitoring) is connected to the Customer Assistant agent, ensuring logging, distributed tracing, and alerting are in place, satisfying the requirements of pattern #26.</p>
+    <div class="nodes"><span class="node-chip">Observability Service</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#27 No Caching Strategy</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Caching strategy implemented via Semantic Cache tool</p>
+    <p class="detail">The architecture includes a tool with category=caching ('Semantic Cache') that is idempotent and connected to the Customer Assistant agent, providing semantic response caching to reduce latency and cost.</p>
+    <div class="nodes"><span class="node-chip">Semantic Cache</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#28 Context Window Mismanagement</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">All agents employ a Prioritised context strategy, matching recommended practices for managing context windows.</p>
+    <p class="detail">Agents Customer Assistant, Review Analyst, Inventory Checker, and Purchase Agent all set contextStrategy=Prioritised, and knowledge sources use hybrid retrieval with chunking, avoiding unfiltered large context loads.</p>
+    <div class="nodes"><span class="node-chip">Customer Assistant</span><span class="node-chip">Review Analyst</span><span class="node-chip">Inventory Checker</span><span class="node-chip">Purchase Agent</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#30 No Feedback Loop</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Feedback loop is implemented via feedback collection and monitoring tools and user feedback behavior.</p>
+    <p class="detail">The architecture includes a tool with category=Feedback (Feedback Collector) for capturing ratings and corrections, a Monitoring tool (Observability Service) for drift detection, and a human node (End User) whose behaviors include providing feedback, establishing a continuous improvement loop.</p>
+    <div class="nodes"><span class="node-chip">Feedback Collector</span><span class="node-chip">Observability Service</span><span class="node-chip">End User</span></div>
+</div>
+<div class="finding positive">
+    <div class="finding-header">
+        <span class="icon">✅</span>
+        <span class="title">#31 Security as an Afterthought</span>
+        <span class="severity severity-positive">Positive</span>
+    </div>
+    <p class="summary">Security considered from design start with authenticated API tools, security and monitoring tools present, and proper auth methods.</p>
+    <p class="detail">All API tools use API Key or Bearer Token authentication. Security tool 'Secrets Manager' is included. Monitoring tool 'Observability Service' provides audit logging. Human node has defined access level. Knowledge sensitivity not flagged as missing for critical data.</p>
+    <div class="nodes"><span class="node-chip">Review Search API</span><span class="node-chip">Inventory API</span><span class="node-chip">Payment Gateway</span><span class="node-chip">Order Service</span><span class="node-chip">Input Validator</span><span class="node-chip">Observability Service</span><span class="node-chip">Semantic Cache</span><span class="node-chip">Eval Framework</span><span class="node-chip">Feedback Collector</span><span class="node-chip">Process Engine</span><span class="node-chip">Secrets Manager</span></div>
+</div>
+<div class="footer">
+    <p>Analyzed on-device &mdash; 43 findings across 5 categories</p>
+</div>
+</div>
+</body>
+</html>

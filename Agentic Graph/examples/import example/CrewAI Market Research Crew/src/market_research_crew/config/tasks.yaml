@@ -1,0 +1,41 @@
+market_research_task:
+  description: >
+    Research the {sector} market. Determine the market size, growth rate,
+    key segments, and the major demand drivers for {region}.
+  expected_output: >
+    A structured brief with market size, CAGR, the top three segments, and a
+    sourced list of demand drivers.
+  agent: research_analyst
+
+competitor_analysis_task:
+  description: >
+    Identify the top five competitors in the {sector} market. For each one,
+    capture their positioning, pricing model, and one notable weakness.
+  expected_output: >
+    A competitor table covering positioning, pricing, and weaknesses for the
+    top five rivals.
+  agent: competitor_analyst
+
+strategy_task:
+  description: >
+    Using the market research and the competitor analysis, recommend a
+    go-to-market strategy for entering the {sector} market in {region}.
+  expected_output: >
+    A one-page strategy recommendation with a target segment, a positioning
+    statement, and three concrete next steps.
+  agent: market_strategist
+  context:
+    - market_research_task
+    - competitor_analysis_task
+
+report_task:
+  description: >
+    Compile the research, the competitive analysis, and the strategy into a
+    polished executive report.
+  expected_output: >
+    A board-ready market research report in Markdown with an executive
+    summary, the findings, and the recommended strategy.
+  agent: report_writer
+  output_file: market_report.md
+  context:
+    - strategy_task
